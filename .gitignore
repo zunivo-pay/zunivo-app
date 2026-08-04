@@ -4,3 +4,4 @@ dist/
 tsconfig.tsbuildinfo
 .vercel
 .env.production
+.fuse_hidden*
