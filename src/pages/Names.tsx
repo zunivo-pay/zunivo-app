@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useWalletAccount } from "../lib/useAccount";
 import { ingestNameTx } from "../lib/api";
+import { APPKIT_ENABLED, openConnectModal } from "../lib/appkit";
 import { getEth } from "../lib/provider";
 import { Link } from "react-router-dom";
 import { formatEther } from "viem";
@@ -121,7 +122,7 @@ export default function Names() {
       <div className="pagehead">
         <h1 className="grad-title">Own your payment name</h1>
         <p>
-          <span className="mint-accent">yourname.zunivo</span> is an NFT on Arc — fully on-chain art
+          <span className="mint-accent">yourname.agent</span> is an NFT on Arc — fully on-chain art
           and metadata, tradable, and it routes USDC to whoever holds it.
           {price !== null && <> Mint: <b style={{ color: "#fff" }}>{formatEther(price)} USDC</b>.</>}
         </p>
@@ -130,7 +131,7 @@ export default function Names() {
       <div className="npanel">
         <label style={{ marginTop: 0 }}>Search a name</label>
         <div style={{ display: "flex", gap: 10 }}>
-          <input placeholder="yourname.zunivo" value={query}
+          <input placeholder="yourname.agent" value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && check()} />
           <button className="btn" style={{ width: 120, marginTop: 0 }} disabled={busy} onClick={check}>Check</button>
@@ -173,7 +174,7 @@ export default function Names() {
 
       <div className="npanel" style={{ marginTop: 18 }}>
         <h1 style={{ fontSize: 18 }}>My names</h1>
-        {!account && <button className="btn ghost" onClick={connect}>Connect wallet</button>}
+        {!account && <button className="btn ghost" onClick={() => (APPKIT_ENABLED ? openConnectModal() : connect())}>Connect wallet</button>}
         {account && (
           <p className="hint" style={{ marginBottom: 6 }}>
             Connected: <span className="mono">{account.slice(0, 8)}…{account.slice(-6)}</span>

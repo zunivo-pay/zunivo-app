@@ -37,14 +37,14 @@ export default function Dashboard() {
   async function load(a?: string) {
     let address = (a ?? addr).trim();
     setErr(null);
-    if (address.startsWith("@") || address.toLowerCase().endsWith(".zunivo")) {
+    if (address.startsWith("@") || address.toLowerCase().endsWith(".agent")) {
       const label = parseHandle(address);
       if (!label) return setErr("Invalid name format.");
       const resolved = await resolveName(label).catch(() => null);
       if (!resolved) return setErr(`${displayName(label)} is not registered.`);
       address = resolved;
     }
-    if (!isAddress(address)) return setErr("Enter a valid 0x address or a .zunivo name.");
+    if (!isAddress(address)) return setErr("Enter a valid 0x address or a .agent name.");
     setActiveAddr(address);
     try {
       setBusy(true);
@@ -106,8 +106,8 @@ export default function Dashboard() {
       </div>
 
       <div className="card" style={{ marginBottom: 16 }}>
-        <label style={{ marginTop: 0 }}>Wallet address or .zunivo name</label>
-        <input placeholder="0x… or yourname.zunivo" value={addr}
+        <label style={{ marginTop: 0 }}>Wallet address or .agent name</label>
+        <input placeholder="0x… or yourname.agent" value={addr}
           onChange={(e) => setAddr(e.target.value.trim())}
           onKeyDown={(e) => e.key === "Enter" && load()} />
         <div style={{ display: "flex", gap: 10 }}>
@@ -130,8 +130,8 @@ export default function Dashboard() {
               <div className="idaddr">{short(activeAddr)}</div>
               <div className="idnames">
                 {myNames.length > 0
-                  ? myNames.map((n) => <span key={n} className="namechip">{n}<b>.zunivo</b></span>)
-                  : <span className="hint">No .zunivo names yet — <Link to="/names">mint one</Link></span>}
+                  ? myNames.map((n) => <span key={n} className="namechip">{n}<b>.agent</b></span>)
+                  : <span className="hint">No .agent names yet — <Link to="/names">mint one</Link></span>}
               </div>
             </div>
             <a className="btn ghost" style={{ marginTop: 0, width: "auto", padding: "9px 16px" }}

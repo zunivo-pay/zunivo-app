@@ -1,6 +1,6 @@
 import { createPublicClient, createWalletClient, custom, http, parseAbi, parseEther, parseEventLogs, encodeFunctionData } from "viem";
 import { getEth } from "./provider";
-import { arcTestnet, CHAIN_PARAMS_FOR_WALLET } from "./chain";
+import { arcTestnet, arcTransport, CHAIN_PARAMS_FOR_WALLET } from "./chain";
 
 export const SPLIT_ADDRESS = ((import.meta.env.VITE_SPLIT_ADDRESS as string | undefined) ??
   "0x12F21A2AC582061598445874c6C5f4F3bcE53eCF") as `0x${string}`;
@@ -12,7 +12,7 @@ export const SPLIT_ABI = parseAbi([
   "event SplitCreated(uint256 indexed splitId, address indexed creator, address[] payees, uint16[] sharesBps)",
 ]);
 
-const pub = createPublicClient({ chain: arcTestnet, transport: http() });
+const pub = createPublicClient({ chain: arcTestnet, transport: arcTransport() });
 
 async function walletFor() {
   const eth = getEth();

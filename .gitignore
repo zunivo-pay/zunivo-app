@@ -2,6 +2,5 @@ node_modules/
 dist/
 .env
 tsconfig.tsbuildinfo
+.vercel
 .env.production
-.env.local
-.vercel/

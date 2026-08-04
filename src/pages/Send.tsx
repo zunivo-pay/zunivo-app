@@ -24,7 +24,7 @@ export default function Send() {
   async function checkRecipient() {
     setResolvedHint(null);
     const t = to.trim();
-    if (t.startsWith("@") || t.toLowerCase().endsWith(".zunivo")) {
+    if (t.startsWith("@") || t.toLowerCase().endsWith(".agent")) {
       const label = parseHandle(t);
       if (!label) return;
       const addr = await resolveName(label).catch(() => null);
@@ -36,14 +36,14 @@ export default function Send() {
     setErr(null);
     let dest = to.trim();
     let label: string | null = null;
-    if (dest.startsWith("@") || dest.toLowerCase().endsWith(".zunivo")) {
+    if (dest.startsWith("@") || dest.toLowerCase().endsWith(".agent")) {
       label = parseHandle(dest);
       if (!label) return setErr("Invalid name format.");
       const resolved = await resolveName(label).catch(() => null);
       if (!resolved) return setErr(`${displayName(label)} is not registered.`);
       dest = resolved;
     }
-    if (!isAddress(dest)) return setErr("Enter a valid 0x address or a .zunivo name.");
+    if (!isAddress(dest)) return setErr("Enter a valid 0x address or a .agent name.");
     const amt = Number(amount);
     if (!amount || !isFinite(amt) || amt <= 0) return setErr("Enter a valid USDC amount.");
     if (!API) return setErr("Sending needs the Zunivo server running.");
@@ -114,8 +114,8 @@ export default function Send() {
           </button>
         </div>
 
-        <label>Recipient — .zunivo name or 0x address</label>
-        <input placeholder="alice.zunivo or 0x…" value={to}
+        <label>Recipient — .agent name or 0x address</label>
+        <input placeholder="alice.agent or 0x…" value={to}
           onChange={(e) => { setTo(e.target.value); touch(); }} onBlur={checkRecipient} />
         {resolvedHint && <p className="hint">{resolvedHint}</p>}
 

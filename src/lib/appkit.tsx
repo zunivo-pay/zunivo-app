@@ -22,8 +22,9 @@ const arcNetwork = {
   testnet: true,
 };
 
+let modal: any = null;
 if (projectId) {
-  createAppKit({
+  modal = createAppKit({
     adapters: [new EthersAdapter()],
     networks: [arcNetwork as any],
     defaultNetwork: arcNetwork as any,
@@ -39,6 +40,11 @@ if (projectId) {
     themeMode: "dark",
     themeVariables: { "--w3m-accent": "#3D5AFE" },
   });
+}
+
+/** Open the same connect modal the topbar uses — from anywhere in the app. */
+export function openConnectModal() {
+  modal?.open?.();
 }
 
 export function AppKitConnectButton() {

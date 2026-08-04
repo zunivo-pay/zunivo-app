@@ -5,7 +5,7 @@ import {
   createWalletClient, createPublicClient, custom, http,
   parseEther, keccak256, toHex, isAddress,
 } from "viem";
-import { arcTestnet, ROUTER_ABI, ROUTER_ADDRESS, EXPLORER, CHAIN_PARAMS_FOR_WALLET } from "../lib/chain";
+import { arcTestnet, arcTransport, ROUTER_ABI, ROUTER_ADDRESS, EXPLORER, CHAIN_PARAMS_FOR_WALLET } from "../lib/chain";
 import { API, getOrder } from "../lib/api";
 import { splitPayCall, SPLIT_ADDRESS, SPLIT_ABI } from "../lib/split";
 import { Brand, ZunivoMark } from "../lib/Logo";
@@ -84,7 +84,7 @@ export default function Pay() {
           });
       setTxHash(hash);
       setPhase("confirming");
-      const pub = createPublicClient({ chain: arcTestnet, transport: http() });
+      const pub = createPublicClient({ chain: arcTestnet, transport: arcTransport() });
       const receipt = await pub.waitForTransactionReceipt({ hash });
       if (receipt.status !== "success") throw new Error("Transaction reverted.");
       setPhase("done");

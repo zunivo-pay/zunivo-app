@@ -1,4 +1,4 @@
-import { defineChain } from "viem";
+import { defineChain, fallback, http } from "viem";
 
 // Arc Testnet — Circle's L1 where native gas is USDC (18 decimals at native layer).
 export const arcTestnet = defineChain({
@@ -7,7 +7,12 @@ export const arcTestnet = defineChain({
   nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 18 },
   rpcUrls: {
     default: {
-      http: ["https://rpc.testnet.arc.network"],
+      http: [
+        "https://rpc.testnet.arc.network",
+        "https://rpc.drpc.testnet.arc.io",
+        "https://rpc.quicknode.testnet.arc.io",
+        "https://rpc.blockdaemon.testnet.arc.io",
+      ],
       webSocket: ["wss://rpc.testnet.arc.network"],
     },
   },
@@ -16,6 +21,17 @@ export const arcTestnet = defineChain({
   },
   testnet: true,
 });
+
+// Multi-gateway transport: races the public Arc RPC gateways, auto-fails-over
+// on rate limits, and keeps using the fastest one (ranked by latency).
+export const ARC_RPCS = [
+  "https://rpc.testnet.arc.network",
+  "https://rpc.drpc.testnet.arc.io",
+  "https://rpc.quicknode.testnet.arc.io",
+  "https://rpc.blockdaemon.testnet.arc.io",
+];
+export const arcTransport = () =>
+  fallback(ARC_RPCS.map((u) => http(u, { timeout: 6_000, retryCount: 0 })), { rank: true });
 
 // Set after running the Foundry deploy script (see paylink-core/script/Deploy.s.sol):
 //   VITE_ROUTER_ADDRESS=0x... in .env
