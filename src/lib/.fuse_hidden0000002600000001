@@ -5,7 +5,7 @@ import { APPKIT_ENABLED, AppKitConnectButton } from "./appkit";
 import { getEth } from "./provider";
 import { useDisplayName } from "./useAccount";
 
-const CONTRACTS = "https://zunivo.io/#trust";
+const ROUTER = "https://testnet.arcscan.app/address/0x4210D40a9899e42b4946B9dC7E0C35d3cf14Ea55";
 
 export default function Shell({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
   const { pathname } = useLocation();
@@ -57,7 +57,7 @@ export default function Shell({ children, dark = false }: { children: React.Reac
       <main className="abmain">{children}</main>
       <footer className="abfoot">
         <span>Powered by <b>zunivo</b> · Arc Testnet</span>
-        <a href={CONTRACTS} target="_blank" rel="noreferrer">verified contracts ↗</a>
+        <a href={ROUTER} target="_blank" rel="noreferrer">verified contracts ↗</a>
       </footer>
     </div>
   );
