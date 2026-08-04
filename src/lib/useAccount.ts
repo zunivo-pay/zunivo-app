@@ -37,7 +37,7 @@ export function useWalletAccount(): `0x${string}` | null {
   return acct;
 }
 
-/** ENS-style courtesy: if the address owns a .zunivo name, show the name. */
+/** ENS-style courtesy: if the address owns a .agent name, show the name. */
 export function useDisplayName(address: string | null | undefined): string | null {
   const [name, setName] = useState<string | null>(null);
   useEffect(() => {
@@ -45,7 +45,7 @@ export function useDisplayName(address: string | null | undefined): string | nul
     setName(null);
     if (!address) return;
     namesOf(address as `0x${string}`)
-      .then((ns) => { if (alive && ns[0]) setName(`${ns[0]}.zunivo`); })
+      .then((ns) => { if (alive && ns[0]) setName(`${ns[0]}.agent`); })
       .catch(() => {});
     return () => { alive = false; };
   }, [address]);

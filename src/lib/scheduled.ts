@@ -1,6 +1,6 @@
 import { createPublicClient, createWalletClient, custom, http, parseAbi, parseEther } from "viem";
 import { getEth } from "./provider";
-import { arcTestnet, CHAIN_PARAMS_FOR_WALLET } from "./chain";
+import { arcTestnet, arcTransport, CHAIN_PARAMS_FOR_WALLET } from "./chain";
 import { API } from "./api";
 
 export const SCHED_ADDRESS = ((import.meta.env.VITE_SCHED_ADDRESS as string | undefined) ??
@@ -11,7 +11,7 @@ const ABI = parseAbi([
   "function release(uint256 id) external",
 ]);
 
-const pub = createPublicClient({ chain: arcTestnet, transport: http() });
+const pub = createPublicClient({ chain: arcTestnet, transport: arcTransport() });
 
 async function walletFor() {
   const eth = getEth();

@@ -1,6 +1,6 @@
 import { createPublicClient, createWalletClient, custom, http, parseAbi, isAddress } from "viem";
 import { getEth } from "./provider";
-import { arcTestnet, CHAIN_PARAMS_FOR_WALLET } from "./chain";
+import { arcTestnet, arcTransport, CHAIN_PARAMS_FOR_WALLET } from "./chain";
 
 /** Public-RPC calls from browsers get rate-limited on busy days — retry with backoff. */
 async function withRetry<T>(fn: () => Promise<T>, tries = 3): Promise<T> {
@@ -16,10 +16,10 @@ async function withRetry<T>(fn: () => Promise<T>, tries = 3): Promise<T> {
 
 
 export const NAMES_ADDRESS = ((import.meta.env.VITE_NAMES_ADDRESS as string | undefined) ??
-  "0x83c4081Be1c85b12FF92Aa912A53700Fb994A4D8") as `0x${string}`;
+  "0x244e0c8bE1Ed59636901F98920413d414B158cc5") as `0x${string}`;
 
 export const NAMES_DEPLOY_BLOCK = BigInt(
-  (import.meta.env.VITE_NAMES_DEPLOY_BLOCK as string | undefined) ?? "52962779"
+  (import.meta.env.VITE_NAMES_DEPLOY_BLOCK as string | undefined) ?? "55209865"
 );
 
 export const NAMES_ABI = parseAbi([
@@ -30,20 +30,20 @@ export const NAMES_ABI = parseAbi([
   "event NameRegistered(string name, uint256 indexed tokenId, address indexed holder, uint256 pricePaid)",
 ]);
 
-const pub = createPublicClient({ chain: arcTestnet, transport: http() });
+const pub = createPublicClient({ chain: arcTestnet, transport: arcTransport() });
 
 export const LABEL_RE = /^[a-z0-9][a-z0-9-]{1,18}[a-z0-9]$/;
 
-/** Accepts "aaa.zunivo", "@aaa", or bare "aaa" → returns the bare label, or null. */
+/** Accepts "aaa.agent", "@aaa", or bare "aaa" → returns the bare label, or null. */
 export function parseHandle(input: string): string | null {
   let s = input.trim().toLowerCase();
   if (s.startsWith("@")) s = s.slice(1);
-  if (s.endsWith(".zunivo")) s = s.slice(0, -7);
+  if (s.endsWith(".agent")) s = s.slice(0, -6);
   return LABEL_RE.test(s) ? s : null;
 }
 
 export function displayName(label: string): string {
-  return label + ".zunivo";
+  return label + ".agent";
 }
 export function validLabel(label: string): boolean {
   return LABEL_RE.test(label);

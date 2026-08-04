@@ -30,7 +30,7 @@ export default function Create() {
 
   async function resolveOne(input: string): Promise<`0x${string}` | null> {
     let dest = input.trim();
-    if (dest.startsWith("@") || dest.toLowerCase().endsWith(".zunivo")) {
+    if (dest.startsWith("@") || dest.toLowerCase().endsWith(".agent")) {
       const label = parseHandle(dest);
       if (!label) return null;
       return (await resolveName(label).catch(() => null)) as `0x${string}` | null;
@@ -52,7 +52,7 @@ export default function Create() {
         const addrs: `0x${string}`[] = [];
         for (const p of payees) {
           const a = await resolveOne(p.dest);
-          if (!a) return setErr(`Can't resolve "${p.dest || "(empty)"}" — use a 0x address or a registered .zunivo name.`);
+          if (!a) return setErr(`Can't resolve "${p.dest || "(empty)"}" — use a 0x address or a registered .agent name.`);
           addrs.push(a);
         }
         const bps = payees.map((p) => Math.round(Number(p.pct) * 100));
@@ -72,14 +72,14 @@ export default function Create() {
     }
 
     let dest = merchant;
-    if (dest.startsWith("@") || dest.toLowerCase().endsWith(".zunivo")) {
+    if (dest.startsWith("@") || dest.toLowerCase().endsWith(".agent")) {
       const label = parseHandle(dest);
       if (!label) return setErr("Invalid name format.");
       const resolved = await resolveName(label).catch(() => null);
       if (!resolved) return setErr(`${displayName(label)} is not registered — mint it on the Names page.`);
       dest = resolved;
     }
-    if (!isAddress(dest)) return setErr("Enter a valid 0x address or a .zunivo name.");
+    if (!isAddress(dest)) return setErr("Enter a valid 0x address or a .agent name.");
     const amt = Number(amount);
     if (!amount || !isFinite(amt) || amt <= 0) return setErr("Enter a valid USDC amount.");
 
@@ -137,8 +137,8 @@ export default function Create() {
         </div>
 
         {rmode === "single" && (<>
-        <label>Your wallet address or .zunivo name (receives the USDC)</label>
-        <input placeholder="0x… or yourname.zunivo" value={merchant}
+        <label>Your wallet address or .agent name (receives the USDC)</label>
+        <input placeholder="0x… or yourname.agent" value={merchant}
           onChange={(e) => { setMerchant(e.target.value.trim()); setLink(null); }} />
         </>)}
 
@@ -146,7 +146,7 @@ export default function Create() {
           <label>Recipients &amp; shares</label>
           {payees.map((p, i) => (
             <div className="payeerow" key={i}>
-              <input placeholder="0x… or name.zunivo" value={p.dest}
+              <input placeholder="0x… or name.agent" value={p.dest}
                 onChange={(e) => setPayee(i, "dest", e.target.value)} />
               <input className="pct" placeholder="%" inputMode="decimal" value={p.pct}
                 onChange={(e) => setPayee(i, "pct", e.target.value.trim())} />

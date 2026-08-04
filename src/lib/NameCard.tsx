@@ -10,7 +10,7 @@ export default function NameCard({ label, size = 230 }: { label: string; size?: 
       <circle cx="74" cy="157" r="7" fill="#0B8F63" />
       <rect x="60" y="166" width="100" height="19" rx="9.5" fill="#3D5AFE" />
       <text x="60" y="308" fontFamily="Helvetica,Arial,sans-serif" fontWeight="700" fontSize={fs} fill="#FFFFFF">{label}</text>
-      <text x="60" y="352" fontFamily="Helvetica,Arial,sans-serif" fontWeight="600" fontSize="27" fill="#10C48B">.zunivo</text>
+      <text x="60" y="352" fontFamily="Helvetica,Arial,sans-serif" fontWeight="600" fontSize="27" fill="#10C48B">.agent</text>
       <rect x="60" y="398" width="120" height="5" rx="2.5" fill="#3D5AFE" />
       <text x="60" y="438" fontFamily="Courier,monospace" fontSize="15" letterSpacing="3" fill="#98A2B3">ZUNIVO NAMES</text>
       <text x="60" y="462" fontFamily="Courier,monospace" fontSize="13" letterSpacing="3" fill="#5B6474">ON ARC</text>
