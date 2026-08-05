@@ -1,5 +1,5 @@
 import { createPublicClient, createWalletClient, custom, http, parseAbi, parseEther, parseEventLogs, encodeFunctionData } from "viem";
-import { getEth } from "./provider";
+import { getEth, requestAccounts } from "./provider";
 import { arcTestnet, arcTransport, CHAIN_PARAMS_FOR_WALLET } from "./chain";
 
 export const SPLIT_ADDRESS = ((import.meta.env.VITE_SPLIT_ADDRESS as string | undefined) ??
@@ -17,7 +17,8 @@ const pub = createPublicClient({ chain: arcTestnet, transport: arcTransport() })
 async function walletFor() {
   const eth = getEth();
   if (!eth) throw new Error("Creating a split needs a wallet.");
-  const [account] = await eth.request({ method: "eth_requestAccounts" });
+  const account = await requestAccounts(eth);
+  if (!account) throw new Error("No account authorized.");
   try {
     await eth.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CHAIN_PARAMS_FOR_WALLET.chainId }] });
   } catch (e: any) {

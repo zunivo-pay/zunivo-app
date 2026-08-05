@@ -5,7 +5,7 @@
  */
 import { createPublicClient, createWalletClient, custom, parseAbi } from "viem";
 import { arcTestnet, arcTransport, CHAIN_PARAMS_FOR_WALLET } from "./chain";
-import { getEth } from "./provider";
+import { getEth, requestAccounts } from "./provider";
 import { API } from "./api";
 
 export const RECORDS_ADDRESS = ((import.meta.env.VITE_RECORDS_ADDRESS as string | undefined) ??
@@ -40,7 +40,8 @@ export async function getAgentCard(label: string): Promise<AgentCard> {
 async function walletFor(): Promise<{ wallet: any; account: `0x${string}` }> {
   const eth = getEth();
   if (!eth) throw new Error("No wallet detected — install MetaMask/Rabby to publish records.");
-  const [account] = await eth.request({ method: "eth_requestAccounts" });
+  const account = await requestAccounts(eth);
+  if (!account) throw new Error("No account authorized.");
   try {
     await eth.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CHAIN_PARAMS_FOR_WALLET.chainId }] });
   } catch (e: any) {

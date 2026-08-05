@@ -1,4 +1,4 @@
-import { getEth } from "./provider";
+import { getEth, requestAccounts } from "./provider";
 /** Shared wallet session controls. Connection permission lives inside the
  *  wallet extension; these helpers drive it via EIP-2255 permission calls. */
 function eth() {
@@ -6,9 +6,8 @@ function eth() {
 }
 
 export async function connectWallet(): Promise<`0x${string}`> {
-  const e = eth();
-  if (!e) throw new Error("No wallet detected.");
-  const [a] = await e.request({ method: "eth_requestAccounts" });
+  const a = await requestAccounts(eth());
+  if (!a) throw new Error("No account authorized.");
   return a;
 }
 
