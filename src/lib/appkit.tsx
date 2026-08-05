@@ -9,7 +9,11 @@ import { setExternalProvider } from "./provider";
 import { useDisplayName } from "./useAccount";
 
 const projectId = import.meta.env.VITE_WC_PROJECT_ID as string | undefined;
-export const APPKIT_ENABLED = Boolean(projectId);
+// AppKit is opt-in via VITE_USE_APPKIT. When off (default), the app uses its own
+// lightweight ConnectModal (EIP-6963 injected discovery + deduped requestAccounts +
+// WalletConnect QR) — which avoids AppKit's flaky "previous request still active"
+// MetaMask flow. VITE_WC_PROJECT_ID stays used for the built-in modal's WC option.
+export const APPKIT_ENABLED = Boolean(import.meta.env.VITE_USE_APPKIT) && Boolean(projectId);
 
 const arcNetwork = {
   id: 5042002,
@@ -23,7 +27,7 @@ const arcNetwork = {
 };
 
 let modal: any = null;
-if (projectId) {
+if (APPKIT_ENABLED && projectId) {
   modal = createAppKit({
     adapters: [new EthersAdapter()],
     networks: [arcNetwork as any],
