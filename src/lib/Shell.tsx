@@ -42,6 +42,7 @@ export default function Shell({ children, dark = false }: { children: React.Reac
             <Link className={cls("/")} to="/">Get paid</Link>
             <Link className={cls("/send")} to="/send">Send</Link>
             <Link className={cls("/names")} to="/names">Names</Link>
+            <Link className={cls("/agents")} to="/agents">Agents</Link>
             <Link className={cls("/dashboard")} to="/dashboard">Dashboard</Link>
           </nav>
           {APPKIT_ENABLED ? (
