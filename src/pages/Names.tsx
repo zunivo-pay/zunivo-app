@@ -8,10 +8,8 @@ import { formatEther } from "viem";
 import { Brand } from "../lib/Logo";
 import { connectWallet, switchWallet, disconnectWallet, onAccountsChanged } from "../lib/wallet";
 import NameCard from "../lib/NameCard";
-import AgentCardEditor from "../lib/AgentCardEditor";
-import { RECORDS_ENABLED } from "../lib/records";
 import {
-  resolveName, getMintPrice, mintName, namesOf, setNameAddress,
+  resolveName, getMintPrice, mintName, namesOf,
   parseHandle, displayName, tokenIdOf, NAMES_ADDRESS,
 } from "../lib/names";
 
@@ -33,9 +31,6 @@ export default function Names() {
     if (globalAccount && !account) setAccount(globalAccount);
   }, [globalAccount]); // inherit the app-wide connection instead of asking again
   const [mine, setMine] = useState<string[]>([]);
-  const [editing, setEditing] = useState<string | null>(null);
-  const [editingCard, setEditingCard] = useState<string | null>(null);
-  const [newAddr, setNewAddr] = useState("");
 
   useEffect(() => {
     getMintPrice().then(setPrice).catch(() => {});
@@ -104,16 +99,6 @@ export default function Names() {
       ingestNameTx(hash).then(() => { if (account) loadMine(account); });
     } catch (e: any) {
       setErr(e?.shortMessage ?? e?.message ?? "Mint failed.");
-    } finally { setBusy(false); }
-  }
-
-  async function doRebind(label: string) {
-    try {
-      setBusy(true); setErr(null);
-      await setNameAddress(label, newAddr.trim());
-      setEditing(null); setNewAddr("");
-    } catch (e: any) {
-      setErr(e?.shortMessage ?? e?.message ?? "Update failed.");
     } finally { setBusy(false); }
   }
 
@@ -188,28 +173,10 @@ export default function Names() {
         {account && mine.length === 0 && <p className="hint">No names on this wallet yet.</p>}
         <div className="nftgrid">
           {mine.map((n) => (
-            <div key={n} className="nftitem">
+            <Link key={n} to={`/names/${n}`} className="nfttile">
               <NameCard label={n} size={220} />
-              <div className="acts">
-                <a className="txlink" href={tokenLink(n)} target="_blank" rel="noreferrer">NFT ↗</a>
-                <button className="linkbtn" onClick={() => { setEditing(editing === n ? null : n); setNewAddr(""); }}>
-                  payout address
-                </button>
-                {RECORDS_ENABLED && (
-                  <button className="linkbtn" onClick={() => setEditingCard(editingCard === n ? null : n)}>
-                    agent card
-                  </button>
-                )}
-              </div>
-              {editingCard === n && <AgentCardEditor label={n} />}
-              {editing === n && (
-                <div style={{ display: "flex", gap: 6 }}>
-                  <input style={{ fontSize: 12 }} placeholder="new payout 0x…"
-                    value={newAddr} onChange={(e) => setNewAddr(e.target.value)} />
-                  <button className="linkbtn" disabled={busy} onClick={() => doRebind(n)}>save</button>
-                </div>
-              )}
-            </div>
+              <span className="nfttile-open">Manage <b>→</b></span>
+            </Link>
           ))}
         </div>
         <p className="hint" style={{ marginTop: 14 }}>
