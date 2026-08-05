@@ -25,6 +25,7 @@ export default function AgentCardEditor({ label }: { label: string }) {
     try {
       setBusy(true); setErr(null); setMsg(null);
       if (card.url && !/^https:\/\//.test(card.url)) throw new Error("Endpoint must be an https:// URL.");
+      if (card.x402 && !/^https:\/\//.test(card.x402)) throw new Error("x402 manifest must be an https:// URL.");
       const hash = await saveAgentCard(label, {
         url: card.url ?? "",
         x402: card.x402 ?? "",
