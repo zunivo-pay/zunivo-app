@@ -8,6 +8,8 @@ import { formatEther } from "viem";
 import { Brand } from "../lib/Logo";
 import { connectWallet, switchWallet, disconnectWallet, onAccountsChanged } from "../lib/wallet";
 import NameCard from "../lib/NameCard";
+import AgentCardEditor from "../lib/AgentCardEditor";
+import { RECORDS_ENABLED } from "../lib/records";
 import {
   resolveName, getMintPrice, mintName, namesOf, setNameAddress,
   parseHandle, displayName, tokenIdOf, NAMES_ADDRESS,
@@ -32,6 +34,7 @@ export default function Names() {
   }, [globalAccount]); // inherit the app-wide connection instead of asking again
   const [mine, setMine] = useState<string[]>([]);
   const [editing, setEditing] = useState<string | null>(null);
+  const [editingCard, setEditingCard] = useState<string | null>(null);
   const [newAddr, setNewAddr] = useState("");
 
   useEffect(() => {
@@ -192,7 +195,13 @@ export default function Names() {
                 <button className="linkbtn" onClick={() => { setEditing(editing === n ? null : n); setNewAddr(""); }}>
                   payout address
                 </button>
+                {RECORDS_ENABLED && (
+                  <button className="linkbtn" onClick={() => setEditingCard(editingCard === n ? null : n)}>
+                    agent card
+                  </button>
+                )}
               </div>
+              {editingCard === n && <AgentCardEditor label={n} />}
               {editing === n && (
                 <div style={{ display: "flex", gap: 6 }}>
                   <input style={{ fontSize: 12 }} placeholder="new payout 0x…"

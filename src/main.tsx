@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Receipt from "./pages/Receipt";
 import Names from "./pages/Names";
 import Send from "./pages/Send";
+import Agents from "./pages/Agents";
 import Shell from "./lib/Shell";
 import "./styles.css";
 
@@ -20,6 +21,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/r/:id" element={<Shell dark><Receipt /></Shell>} />
         <Route path="/names" element={<Shell dark><Names /></Shell>} />
         <Route path="/send" element={<Shell><Send /></Shell>} />
+        <Route path="/agents" element={<Shell dark><Agents /></Shell>} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
