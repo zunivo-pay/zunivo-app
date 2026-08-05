@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getEth } from "../lib/provider";
+import { getEth, requestAccounts } from "../lib/provider";
 import { Link } from "react-router-dom";
 import { isAddress } from "viem";
 import { API, getActivity, getSent, OrderView, SentView } from "../lib/api";
@@ -24,7 +24,8 @@ export default function Dashboard() {
   async function useWallet() {
     const eth = getEth();
     if (!eth) return setErr("No wallet detected — paste your address instead.");
-    const [a] = await eth.request({ method: "eth_requestAccounts" });
+    const a = await requestAccounts(eth);
+    if (!a) return setErr("No account authorized.");
     setAddr(a);
     load(a);
   }

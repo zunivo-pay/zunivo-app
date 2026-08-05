@@ -94,3 +94,20 @@ export function clearSelection() {
   localStorage.removeItem("zunivo_wallet_rdns");
   emit();
 }
+
+/** Deduped eth_requestAccounts. MetaMask allows only ONE pending connection
+ *  request at a time; a second concurrent call (double-click, two components)
+ *  throws "previous request is still active". This shares one in-flight promise
+ *  so every caller awaits the same prompt instead of racing it. */
+let inflight: Promise<`0x${string}` | null> | null = null;
+export function requestAccounts(provider?: any): Promise<`0x${string}` | null> {
+  const eth = provider ?? getEth();
+  if (!eth) return Promise.reject(new Error("No wallet detected."));
+  if (inflight) return inflight;
+  const p = eth
+    .request({ method: "eth_requestAccounts" })
+    .then((accs: string[]) => (accs?.[0] as `0x${string}`) ?? null)
+    .finally(() => { inflight = null; });
+  inflight = p;
+  return p;
+}

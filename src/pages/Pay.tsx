@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { getEth } from "../lib/provider";
+import { getEth, requestAccounts } from "../lib/provider";
 import { Link, useSearchParams } from "react-router-dom";
 import {
   createWalletClient, createPublicClient, custom, http,
@@ -55,7 +55,8 @@ export default function Pay() {
     }
     try {
       setPhase("connecting");
-      const [account] = await eth.request({ method: "eth_requestAccounts" });
+      const account = await requestAccounts(eth);
+      if (!account) throw new Error("No account authorized.");
       try {
         await eth.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CHAIN_PARAMS_FOR_WALLET.chainId }] });
       } catch (switchErr: any) {

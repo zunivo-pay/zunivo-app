@@ -1,5 +1,5 @@
 import { createPublicClient, createWalletClient, custom, http, parseAbi, isAddress } from "viem";
-import { getEth } from "./provider";
+import { getEth, requestAccounts } from "./provider";
 import { arcTestnet, arcTransport, CHAIN_PARAMS_FOR_WALLET } from "./chain";
 
 /** Public-RPC calls from browsers get rate-limited on busy days — retry with backoff. */
@@ -16,10 +16,10 @@ async function withRetry<T>(fn: () => Promise<T>, tries = 3): Promise<T> {
 
 
 export const NAMES_ADDRESS = ((import.meta.env.VITE_NAMES_ADDRESS as string | undefined) ??
-  "0x244e0c8bE1Ed59636901F98920413d414B158cc5") as `0x${string}`;
+  "0x83c4081Be1c85b12FF92Aa912A53700Fb994A4D8") as `0x${string}`;
 
 export const NAMES_DEPLOY_BLOCK = BigInt(
-  (import.meta.env.VITE_NAMES_DEPLOY_BLOCK as string | undefined) ?? "55209865"
+  (import.meta.env.VITE_NAMES_DEPLOY_BLOCK as string | undefined) ?? "52962779"
 );
 
 export const NAMES_ABI = parseAbi([
@@ -78,7 +78,8 @@ export async function namesOf(holder: `0x${string}`): Promise<string[]> {
 async function walletFor(): Promise<{ wallet: any; account: `0x${string}` }> {
   const eth = getEth();
   if (!eth) throw new Error("No wallet detected — install MetaMask/Rabby to mint.");
-  const [account] = await eth.request({ method: "eth_requestAccounts" });
+  const account = await requestAccounts(eth);
+  if (!account) throw new Error("No account authorized.");
   try {
     await eth.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CHAIN_PARAMS_FOR_WALLET.chainId }] });
   } catch (e: any) {

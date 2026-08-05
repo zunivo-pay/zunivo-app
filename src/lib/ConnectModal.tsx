@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   listWallets, subscribeWallets, useInjected, useWalletConnect,
-  hasWalletConnect, getEth, connectedWalletName, clearSelection, WalletInfo,
+  hasWalletConnect, requestAccounts, connectedWalletName, clearSelection, WalletInfo,
 } from "./provider";
 import { disconnectWallet } from "./wallet";
 
@@ -21,8 +21,7 @@ export default function ConnectModal({
   if (!open) return null;
 
   async function finishConnect() {
-    const eth = getEth();
-    const [a] = await eth.request({ method: "eth_requestAccounts" });
+    const a = await requestAccounts();
     onAccount(a ?? null);
     onClose();
   }
