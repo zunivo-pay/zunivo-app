@@ -5,6 +5,9 @@ import NameCard from "../lib/NameCard";
 
 const EXPLORER = "https://testnet.arcscan.app";
 
+/** On-chain records are attacker-controlled input — only ever link to https URLs. */
+const safeHttps = (u?: string) => (u && /^https:\/\/[^\s]+$/i.test(u) ? u : null);
+
 /** The public .agent service directory — every name that published an endpoint. */
 export default function Agents() {
   const [agents, setAgents] = useState<DirectoryAgent[] | null>(null);
@@ -52,8 +55,8 @@ export default function Agents() {
               </div>
             </div>
             <div className="acts" style={{ marginTop: 10 }}>
-              {a.records.x402 && (
-                <a className="txlink" href={a.records.x402} target="_blank" rel="noreferrer">x402 manifest ↗</a>
+              {safeHttps(a.records.x402) && (
+                <a className="txlink" href={safeHttps(a.records.x402)!} target="_blank" rel="noreferrer">x402 manifest ↗</a>
               )}
               <a className="txlink" href={`${EXPLORER}/address/${a.owner}`} target="_blank" rel="noreferrer">
                 paid to {a.owner.slice(0, 6)}…{a.owner.slice(-4)} ↗
