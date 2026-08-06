@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { isAddress } from "viem";
 import QRCode from "qrcode";
 import { API, createOrder } from "../lib/api";
 import { resolveName, parseHandle, displayName } from "../lib/names";
 import { ZunivoMark } from "../lib/Logo";
 import { createSplitOnChain } from "../lib/split";
+import { useWalletAccount, useDisplayName } from "../lib/useAccount";
 
 export default function Create() {
   const [merchant, setMerchant] = useState("");
@@ -15,7 +16,14 @@ export default function Create() {
   const [err, setErr] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [rmode, setRmode] = useState<"single" | "split">("single");
+  const [rmode, setRmode] = useState<"single" | "split" | "receive">("single");
+
+  const account = useWalletAccount();
+  const myName = useDisplayName(account);
+  // my receive code: prefer the .agent name (survives wallet rotation), else the address
+  useEffect(() => {
+    if (rmode === "receive" && !merchant && (myName || account)) setMerchant(myName ?? account!);
+  }, [rmode, myName, account]); // eslint-disable-line react-hooks/exhaustive-deps
   const [payees, setPayees] = useState<{ dest: string; pct: string }[]>([
     { dest: "", pct: "70" }, { dest: "", pct: "30" },
   ]);
@@ -41,6 +49,32 @@ export default function Create() {
   async function generate() {
     setErr(null);
     setCopied(false);
+
+    if (rmode === "receive") {
+      // a durable "scan to pay me" code — opens the Send page prefilled
+      let id = merchant.trim();
+      if (!id) return setErr("Connect a wallet or enter your address / name.");
+      if (id.startsWith("@") || id.toLowerCase().endsWith(".agent")) {
+        const label = parseHandle(id);
+        if (!label) return setErr("Invalid name format.");
+        const resolved = await resolveName(label).catch(() => null);
+        if (!resolved) return setErr(`${displayName(label)} is not registered — mint it on the Names page.`);
+        id = `${label}.agent`;
+      } else if (!isAddress(id)) {
+        return setErr("Enter a valid 0x address or a .agent name.");
+      }
+      try {
+        setBusy(true);
+        const params = new URLSearchParams({ to: id });
+        if (amount && Number(amount) > 0) params.set("amt", amount);
+        const url = `${window.location.origin}/send?${params.toString()}`;
+        setLink(url);
+        setQr(await QRCode.toDataURL(url, { width: 210, margin: 1, color: { dark: "#101319" } }));
+      } finally {
+        setBusy(false);
+      }
+      return;
+    }
 
     if (rmode === "split") {
       const amt = Number(amount);
@@ -122,24 +156,32 @@ export default function Create() {
 
       <div className="card">
         <label style={{ marginTop: 0 }}>Who gets paid?</label>
-        <div className="scenarios">
+        <div className="scenarios three">
           <button type="button" className={`scenario ${rmode === "single" ? "on" : ""}`}
             onClick={() => { setRmode("single"); setLink(null); }}>
             <h4>One recipient</h4>
-            <p>Everything goes to a single wallet or name.</p>
+            <p>A link for a specific amount — like an invoice.</p>
           </button>
           <button type="button" className={`scenario ${rmode === "split" ? "on" : ""}`}
             onClick={() => { setRmode("split"); setLink(null); }}>
             <h4>Split automatically</h4>
             <p>One payment, divided on-chain between 2–20 recipients.</p>
-            <p className="aud">For platforms · co-creators · referral shares</p>
+          </button>
+          <button type="button" className={`scenario ${rmode === "receive" ? "on" : ""}`}
+            onClick={() => { setRmode("receive"); setLink(null); setErr(null); }}>
+            <h4>My receive code</h4>
+            <p>One permanent QR — scan &amp; pay, any amount.</p>
+            <p className="aud">Print it · pin it in chats</p>
           </button>
         </div>
 
-        {rmode === "single" && (<>
+        {(rmode === "single" || rmode === "receive") && (<>
         <label>Your wallet address or .agent name (receives the USDC)</label>
         <input placeholder="0x… or yourname.agent" value={merchant}
           onChange={(e) => { setMerchant(e.target.value.trim()); setLink(null); }} />
+        {rmode === "receive" && (myName || account) && (
+          <p className="hint">Auto-filled from your connected wallet{myName ? " — using your .agent name, so the code keeps working even if you change wallets" : ""}.</p>
+        )}
         </>)}
 
         {rmode === "split" && (<>
@@ -167,17 +209,19 @@ export default function Create() {
           </p>
         </>)}
 
-        <label>Amount (USDC)</label>
-        <input placeholder="50.00" inputMode="decimal" value={amount}
+        <label>{rmode === "receive" ? "Amount (optional — leave empty and the payer chooses)" : "Amount (USDC)"}</label>
+        <input placeholder={rmode === "receive" ? "any amount" : "50.00"} inputMode="decimal" value={amount}
           onChange={(e) => { setAmount(e.target.value.trim()); setLink(null); }} />
 
+        {rmode !== "receive" && (<>
         <label>Memo (optional — shown to the payer, used for reconciliation)</label>
         <input placeholder="Invoice #2026-07 · logo design" value={memo}
           onChange={(e) => { setMemo(e.target.value); setLink(null); }} />
+        </>)}
 
         {err && <p className="err">{err}</p>}
         <button className="btn" disabled={busy} onClick={generate}>
-          {busy ? "Creating…" : "Generate link"}
+          {busy ? "Creating…" : rmode === "receive" ? "Generate my code" : "Generate link"}
         </button>
         <p className="hint" style={{ marginTop: 12 }}>
           Non-custodial: funds go straight to your wallet in one on-chain transaction.
@@ -194,9 +238,11 @@ export default function Create() {
           <div className="pv-card">
             <ZunivoMark size={34} />
             <p className="merchant-row" style={{ marginTop: 6 }}>
-              {rmode === "split" ? `Payment splits ${payees.length} ways` : `Payment request from ${short(merchant)}`}
+              {rmode === "split" ? `Payment splits ${payees.length} ways`
+                : rmode === "receive" ? `Pay ${short(merchant)} — scan to send`
+                : `Payment request from ${short(merchant)}`}
             </p>
-            <div className="amount">{amount || "0.00"}<small>USDC</small></div>
+            <div className="amount">{rmode === "receive" && !amount ? "any" : amount || "0.00"}<small>USDC</small></div>
             {rmode === "split" && (
               <div className="pv-split">
                 {payees.map((p, i) => (
