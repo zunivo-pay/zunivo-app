@@ -60,23 +60,37 @@ export async function useInjected(rdns: string): Promise<any> {
   return selected;
 }
 
+/** One provider instance for the whole page. EthereumProvider.init() builds a
+ *  fresh sign-client sharing the same wc@2 storage — re-initializing on every
+ *  click makes concurrent clients reset each other's pairing proposals. Init
+ *  once, reuse; a failed init clears the cache so the next click retries. */
+let wcInit: Promise<any> | null = null;
+function initWalletConnect(projectId: string): Promise<any> {
+  if (!wcInit) {
+    wcInit = import("@walletconnect/ethereum-provider").then(({ EthereumProvider }) =>
+      EthereumProvider.init({
+        projectId,
+        chains: [5042002],
+        showQrModal: true,
+        rpcMap: { 5042002: "https://rpc.testnet.arc.network" },
+        metadata: {
+          name: "Zunivo",
+          description: "USDC payments & names on Arc",
+          url: "https://app.zunivo.io",
+          icons: ["https://zunivo.io/favicon.svg"],
+        },
+      }),
+    );
+    wcInit.catch(() => { wcInit = null; });
+  }
+  return wcInit;
+}
+
 export async function useWalletConnect(): Promise<any> {
   const projectId = import.meta.env.VITE_WC_PROJECT_ID as string | undefined;
   if (!projectId) throw new Error("WalletConnect is not configured.");
-  const { EthereumProvider } = await import("@walletconnect/ethereum-provider");
-  const p: any = await EthereumProvider.init({
-    projectId,
-    chains: [5042002],
-    showQrModal: true,
-    rpcMap: { 5042002: "https://rpc.testnet.arc.network" },
-    metadata: {
-      name: "Zunivo",
-      description: "USDC payments & names on Arc",
-      url: "https://app.zunivo.io",
-      icons: ["https://zunivo.io/favicon.svg"],
-    },
-  });
-  await p.enable();
+  const p: any = await initWalletConnect(projectId);
+  await p.enable(); // returns the live session, or opens the QR modal
   selected = p;
   selectedName = "WalletConnect";
   localStorage.removeItem("zunivo_wallet_rdns");

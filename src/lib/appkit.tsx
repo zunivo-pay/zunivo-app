@@ -1,71 +1,24 @@
-/** Reown AppKit integration — the industry-standard connect modal
- *  (injected wallets + WalletConnect QR + 590+ wallet directory).
- *  Enabled when VITE_WC_PROJECT_ID is set; otherwise Shell falls back
- *  to the built-in lightweight modal. */
-import { useEffect } from "react";
-import { createAppKit, useAppKit, useAppKitAccount, useAppKitProvider } from "@reown/appkit/react";
-import { EthersAdapter } from "@reown/appkit-adapter-ethers";
-import { setExternalProvider } from "./provider";
-import { useDisplayName } from "./useAccount";
+/** AppKit has been removed from the bundle — this stub keeps the old exports.
+ *
+ *  Root cause of the "blank WalletConnect QR" bug (2026-08): the app bundled
+ *  TWO copies of @reown/appkit — ours (1.8.23, statically imported here even
+ *  when the feature was disabled) and the one @walletconnect/ethereum-provider
+ *  pins internally (1.8.19) to render its QR modal. Both register the same
+ *  <w3m-*>/<wui-*> custom elements; Reown's registration helper silently skips
+ *  duplicates, so the SDK's modal mounted OUR element classes, which subscribe
+ *  to OUR never-initialized copy's state → an empty shell with no QR and no
+ *  console error. Closing it made the SDK throw "Connection request reset".
+ *
+ *  Fix: no @reown import may exist in app code. The WalletConnect QR flow
+ *  (lib/provider.ts → useWalletConnect) now uses ONLY the SDK's own copy.
+ *  If AppKit is re-evaluated at mainnet, restore from git history and pin the
+ *  app's @reown/appkit to the exact version ethereum-provider ships. */
+export const APPKIT_ENABLED = false;
 
-const projectId = import.meta.env.VITE_WC_PROJECT_ID as string | undefined;
-// AppKit is opt-in via VITE_USE_APPKIT. When off (default), the app uses its own
-// lightweight ConnectModal (EIP-6963 injected discovery + deduped requestAccounts +
-// WalletConnect QR) — which avoids AppKit's flaky "previous request still active"
-// MetaMask flow. VITE_WC_PROJECT_ID stays used for the built-in modal's WC option.
-export const APPKIT_ENABLED = Boolean(import.meta.env.VITE_USE_APPKIT) && Boolean(projectId);
-
-const arcNetwork = {
-  id: 5042002,
-  caipNetworkId: "eip155:5042002",
-  chainNamespace: "eip155",
-  name: "Arc Testnet",
-  nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 18 },
-  rpcUrls: { default: { http: ["https://rpc.testnet.arc.network"] } },
-  blockExplorers: { default: { name: "ArcScan", url: "https://testnet.arcscan.app" } },
-  testnet: true,
-};
-
-let modal: any = null;
-if (APPKIT_ENABLED && projectId) {
-  modal = createAppKit({
-    adapters: [new EthersAdapter()],
-    networks: [arcNetwork as any],
-    defaultNetwork: arcNetwork as any,
-    projectId,
-    metadata: {
-      name: "Zunivo",
-      description: "USDC payments & names on Arc",
-      url: "https://app.zunivo.io",
-      icons: ["https://zunivo.io/favicon.svg"],
-    },
-    features: { analytics: false, email: false, socials: false },
-    enableCoinbase: false,
-    themeMode: "dark",
-    themeVariables: { "--w3m-accent": "#3D5AFE" },
-  });
-}
-
-/** Open the same connect modal the topbar uses — from anywhere in the app. */
 export function openConnectModal() {
-  modal?.open?.();
+  /* no-op: Shell's built-in ConnectModal is the only connect UI */
 }
 
-export function AppKitConnectButton() {
-  const { open } = useAppKit();
-  const { address, isConnected } = useAppKitAccount();
-  const { walletProvider } = useAppKitProvider("eip155");
-
-  useEffect(() => {
-    if (walletProvider) setExternalProvider(walletProvider, "AppKit");
-  }, [walletProvider]);
-
-  const displayName = useDisplayName(isConnected ? address : null);
-  return (
-    <button className="connectbtn" onClick={() => open()}>
-      {isConnected && address
-        ? displayName ?? `${address.slice(0, 6)}…${address.slice(-4)}`
-        : "Connect"}
-    </button>
-  );
+export function AppKitConnectButton(): null {
+  return null;
 }
