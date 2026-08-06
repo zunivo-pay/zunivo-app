@@ -112,7 +112,7 @@ export default function Names() {
         <p>
           <span className="mint-accent">yourname.agent</span> is an NFT on Arc — fully on-chain art
           and metadata, tradable, and it routes USDC to whoever holds it.
-          {price !== null && <> Mint: <b style={{ color: "#fff" }}>{formatEther(price)} USDC</b>.</>}
+          {price !== null && <> Mint: <b style={{ color: "var(--ink)" }}>{formatEther(price)} USDC</b>.</>}
         </p>
       </div>
 

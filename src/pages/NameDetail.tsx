@@ -163,7 +163,7 @@ function AgentCardSection({ label, card, canEdit, onSaved }: {
       {!has && !editing && <p className="hint">No service published. {canEdit ? "Publish an endpoint to make this name a callable, payable agent." : ""}</p>}
       {has && !editing && (
         <>
-          {card.description && <p style={{ color: "#DCE2F5", fontSize: 14, margin: "2px 0 8px" }}>{card.description}</p>}
+          {card.description && <p style={{ color: "var(--ink)", fontSize: 14, margin: "2px 0 8px" }}>{card.description}</p>}
           {card.url && <div className="rrow"><span>Endpoint</span><span className="mono" style={{ fontSize: 12 }}>{card.url}</span></div>}
           {card.x402 && <div className="rrow"><span>x402</span><span className="mono" style={{ fontSize: 12 }}>{card.x402}</span></div>}
         </>
