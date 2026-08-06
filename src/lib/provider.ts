@@ -44,7 +44,10 @@ export function connectedWalletName(): string {
   return selectedName || ((window as any).ethereum ? "Browser wallet" : "");
 }
 export function hasWalletConnect(): boolean {
-  return Boolean(import.meta.env.VITE_WC_PROJECT_ID);
+  // Opt-in via VITE_ENABLE_WC. Kept off on testnet: mobile wallets don't have
+  // Arc's custom chain (5042002), so QR pairing can't complete a usable session.
+  // Re-enable at mainnet when a widely-recognized chain id is available.
+  return Boolean(import.meta.env.VITE_ENABLE_WC) && Boolean(import.meta.env.VITE_WC_PROJECT_ID);
 }
 
 export async function useInjected(rdns: string): Promise<any> {
