@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useWalletAccount } from "../lib/useAccount";
+import { useWalletAccount, pickPrimary, setPrimaryName } from "../lib/useAccount";
 import {
   resolveName, setNameAddress, namesOf, displayName, tokenIdOf, NAMES_ADDRESS, parseHandle,
 } from "../lib/names";
@@ -21,6 +21,7 @@ export default function NameDetail() {
   const [owns, setOwns] = useState<boolean | null>(null);
   const [card, setCard] = useState<AgentCard>({});
   const [loaded, setLoaded] = useState(false);
+  const [isPrimary, setIsPrimary] = useState(false);
 
   useEffect(() => {
     if (!label) return;
@@ -30,9 +31,18 @@ export default function NameDetail() {
   }, [label]);
 
   useEffect(() => {
-    if (!label || !account) { setOwns(null); return; }
-    namesOf(account).then((ns) => setOwns(ns.includes(label))).catch(() => setOwns(null));
+    if (!label || !account) { setOwns(null); setIsPrimary(false); return; }
+    namesOf(account).then((ns) => {
+      setOwns(ns.includes(label));
+      setIsPrimary(pickPrimary(account, ns) === label);
+    }).catch(() => setOwns(null));
   }, [label, account]);
+
+  function makePrimary() {
+    if (!account || !label) return;
+    setPrimaryName(account, label);
+    setIsPrimary(true);
+  }
 
   if (!label) {
     return (
@@ -63,7 +73,15 @@ export default function NameDetail() {
             <span className="ref-kicker">zunivo names · on arc</span>
             <h1 className="detail-name">{label}<span className="mint-accent">.agent</span></h1>
             {owns === true && <span className="badge lockb">YOU HOLD THIS NAME</span>}
+            {owns === true && isPrimary && <span className="badge lockb" style={{ marginLeft: 8 }}>★ PRIMARY NAME</span>}
             {owns === false && <span className="badge refb">VIEW ONLY · NOT YOUR NAME</span>}
+            {owns === true && !isPrimary && (
+              <div style={{ marginTop: 10 }}>
+                <button className="linkbtn" style={{ fontSize: 13 }} onClick={makePrimary}>
+                  ☆ Set as primary name — shown as your identity across the app
+                </button>
+              </div>
+            )}
           </div>
 
           <PayoutSection label={label} payout={payout} registered={registered} canEdit={owns === true}
