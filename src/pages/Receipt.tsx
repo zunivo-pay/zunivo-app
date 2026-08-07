@@ -16,7 +16,8 @@ export default function Receipt() {
   }, [id]);
 
   const short = (a: string) => `${a.slice(0, 8)}…${a.slice(-6)}`;
-  const fmt = (ts: number) => new Date(ts * 1000).toLocaleString();
+  const fmt = (ts: number) =>
+    new Date(ts * 1000).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
 
   return (
     <div className="shell">
