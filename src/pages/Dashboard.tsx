@@ -16,7 +16,7 @@ const usd = (n: number | string) =>
     minimumFractionDigits: 2, maximumFractionDigits: 2,
   });
 const fmtTime = (ts: number) =>
-  new Date(ts * 1000).toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  new Date(ts * 1000).toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
 const short = (s: string) => `${s.slice(0, 6)}…${s.slice(-4)}`;
 
 /** Live clock — 1s tick so countdowns feel alive. */

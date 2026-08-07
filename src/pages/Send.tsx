@@ -133,7 +133,9 @@ export default function Send() {
 
   const short = (s: string) =>
     s.startsWith("0x") && s.length > 14 ? `${s.slice(0, 8)}…${s.slice(-6)}` : s || "—";
-  const whenText = when ? new Date(when).toLocaleString() : "—";
+  const whenText = when
+    ? new Date(when).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false })
+    : "—";
   const balNum = balance !== null ? Number(balance) : null;
   const canSave = resolved !== null && !findContact(resolved.label ? `${resolved.label}.agent` : to);
   const chips: { key: string; text: string; value: string; saved?: Contact }[] = [
