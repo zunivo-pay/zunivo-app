@@ -1,30 +1,43 @@
-# Zunivo app (v0.1) — payment link + pay page
+# zunivo app — [app.zunivo.io](https://app.zunivo.io)
 
-Week-1 end-to-end MVP: merchant creates a link (`/`), payer opens it (`/pay`),
-pays native USDC through ArcPayRouter on Arc Testnet, sees an on-chain receipt.
-No backend yet — reconciliation dashboard lands in week 2.
+The human **and** agent surface of zunivo: non-custodial USDC payments on
+Circle's Arc, with `.agent` names as payable, discoverable identities.
 
-## Run order (first time)
-1. Deploy the contract (in `paylink-core/`):
-   export DEPLOYER_PK=$(op read "op://<vault>/arc-deployer/private key")
-   export FEE_COLLECTOR=0x<your_fee_wallet>
-   forge script script/Deploy.s.sol:Deploy --rpc-url arc_testnet --broadcast
-2. Copy the printed router address into `.env`:
-   cp .env.example .env   # then set VITE_ROUTER_ADDRESS=0x…
-3. App:
-   npm install
-   npm run dev            # local test
-   npm run build          # dist/ → deploy to Vercel / Cloudflare Pages / any static host
-   (SPA: configure the host to rewrite all routes to /index.html)
+## What's inside
 
-## Test flow on testnet
-- Fund two wallets with test USDC: https://faucet.circle.com (select Arc Testnet)
-- Open /, paste wallet A as recipient, amount 1, generate link
-- Open the link in another browser/profile with wallet B, pay
-- Success page links to the ArcScan receipt; wallet A balance +1 USDC
+- **Get paid** — payment links (invoice-style), atomic on-chain splits
+  (2–20 recipients), and a permanent personal **receive code** (scan → pay).
+- **Send** — pay by `.agent` name or address, with a local **contact book**,
+  recent recipients, live balance + MAX, recipient resolution preview, and
+  **scheduled sends** (funds locked on-chain until a date, live countdowns).
+- **Names** — mint `yourname.agent` (ERC-721, art 100% on-chain), premium
+  per-name page: payout routing, **agent card** (endpoint/x402/description →
+  on-chain service discovery), primary-name selection.
+- **Agents** — the public directory of callable, payable `.agent` services.
+- **Dashboard** — auto-loads your wallet: balance, settled/locked/committed
+  KPIs, unified in/out activity feed, unlock countdowns, CSV export.
 
-## Notes
-- Amounts use native-USDC 18 decimals (`parseEther`) — correct for Arc's native layer.
-- The pay page auto-adds/switches Arc Testnet in the wallet (chainId 0x4cef52).
-- Payer without a wallet extension currently sees guidance; Circle Wallets
-  (email login, no extension) is the week-3 integration that removes this wall.
+## Stack
+
+React + Vite + viem (multi-RPC fallback transport) · EIP-6963 wallet
+discovery + WalletConnect QR · Circle Modular Wallets passkey checkout ·
+paper-light design system shared with [zunivo.io](https://zunivo.io).
+
+## Run
+
+```bash
+npm install
+npm run dev     # local
+npm run build   # dist/ → any static host (SPA rewrite all routes to /index.html)
+```
+
+Key env (`.env` / `.env.production`): `VITE_API_URL`, `VITE_ROUTER_ADDRESS`,
+`VITE_NAMES_ADDRESS`, `VITE_RECORDS_ADDRESS`, `VITE_WC_PROJECT_ID`,
+`VITE_ENABLE_WC`, `VITE_CIRCLE_CLIENT_KEY`.
+
+## Related
+
+Contracts: [zunivo-contracts](https://github.com/zunivo-pay/zunivo-contracts) ·
+API/indexer: [zunivo-server](https://github.com/zunivo-pay/zunivo-server) ·
+Agent SDK: [`zunivo-x402-arc`](https://www.npmjs.com/package/zunivo-x402-arc) ·
+MCP: [`zunivo-mcp`](https://www.npmjs.com/package/zunivo-mcp)
