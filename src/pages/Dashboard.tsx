@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { EXPLORER } from "../lib/chain";
 import { getEth, requestAccounts } from "../lib/provider";
 import { Link } from "react-router-dom";
 import { isAddress } from "viem";
@@ -173,7 +174,7 @@ export default function Dashboard() {
       key: `t${p.txHash}`, ts: p.ts, dir: "out",
       title: p.memo || (p.to ? `To ${short(p.to)}` : "Sent"),
       amount: p.amount, chip: p.splitId != null ? "split" : "sent",
-      href: `https://testnet.arcscan.app/tx/${p.txHash}`, ext: true,
+      href: `${EXPLORER}/tx/${p.txHash}`, ext: true,
     })),
   ].sort((a, b) => b.ts - a.ts).slice(0, 8);
 
@@ -374,7 +375,7 @@ export default function Dashboard() {
                         <td className="mono">{p.to ? short(p.to) : "—"}{p.splitId != null && <span className="chip paid" style={{ marginLeft: 6 }}>split</span>}</td>
                         <td>{p.memo ?? "—"}</td>
                         <td className="mono">{usd(p.amount)} USDC</td>
-                        <td><a className="txlink" href={`https://testnet.arcscan.app/tx/${p.txHash}`} target="_blank" rel="noreferrer">↗</a></td>
+                        <td><a className="txlink" href={`${EXPLORER}/tx/${p.txHash}`} target="_blank" rel="noreferrer">↗</a></td>
                       </tr>
                     ))}
                   </tbody>
@@ -409,7 +410,7 @@ export default function Dashboard() {
                               </button>
                             )}
                             {l.settledTx && (
-                              <a className="txlink" href={`https://testnet.arcscan.app/tx/${l.settledTx}`} target="_blank" rel="noreferrer"> tx ↗</a>
+                              <a className="txlink" href={`${EXPLORER}/tx/${l.settledTx}`} target="_blank" rel="noreferrer"> tx ↗</a>
                             )}
                           </td>
                         </tr>

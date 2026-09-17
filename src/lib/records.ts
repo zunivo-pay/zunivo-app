@@ -4,12 +4,11 @@
  * turns their name into a discoverable, callable, payable service.
  */
 import { createPublicClient, createWalletClient, custom, parseAbi } from "viem";
-import { arcTestnet, arcTransport, CHAIN_PARAMS_FOR_WALLET } from "./chain";
+import { arcChain, arcTransport, CHAIN_PARAMS_FOR_WALLET, CONTRACTS } from "./chain";
 import { getEth, requestAccounts } from "./provider";
 import { API } from "./api";
 
-export const RECORDS_ADDRESS = ((import.meta.env.VITE_RECORDS_ADDRESS as string | undefined) ??
-  "0x0000000000000000000000000000000000000000") as `0x${string}`;
+export const RECORDS_ADDRESS = CONTRACTS.records;
 export const RECORDS_ENABLED = RECORDS_ADDRESS !== "0x0000000000000000000000000000000000000000";
 
 export const RECORDS_ABI = parseAbi([
@@ -22,7 +21,7 @@ export const RECORDS_ABI = parseAbi([
 export const AGENT_KEYS = ["url", "x402", "description"] as const;
 export type AgentCard = Partial<Record<(typeof AGENT_KEYS)[number], string>>;
 
-const pub = createPublicClient({ chain: arcTestnet, transport: arcTransport() });
+const pub = createPublicClient({ chain: arcChain, transport: arcTransport() });
 
 export async function getAgentCard(label: string): Promise<AgentCard> {
   if (!RECORDS_ENABLED) return {};
@@ -49,7 +48,7 @@ async function walletFor(): Promise<{ wallet: any; account: `0x${string}` }> {
       await eth.request({ method: "wallet_addEthereumChain", params: [CHAIN_PARAMS_FOR_WALLET] });
     } else throw e;
   }
-  return { wallet: createWalletClient({ chain: arcTestnet, transport: custom(eth) }), account };
+  return { wallet: createWalletClient({ chain: arcChain, transport: custom(eth) }), account };
 }
 
 /** Write the card in one transaction. Empty strings clear the key on-chain. */

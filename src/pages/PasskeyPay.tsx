@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import {
-  circleEnabled, storedCredential, forgetCredential,
+  circleEnabled, circleUnavailableReason, storedCredential, forgetCredential,
   passkeyRegister, passkeyLogin, smartAccountFor, smartAccountBalance, payWithPasskey, diagnoseUserOps,
 } from "../lib/circle";
 import { splitPayCall } from "../lib/split";
+import { IS_MAINNET, NET } from "../lib/chain";
 import type { SmartAccount } from "viem/account-abstraction";
 
 type Props = {
@@ -102,7 +103,12 @@ export default function PasskeyPay({ orderId, merchant, amount, splitId, onPaid 
     setCopied(true); setTimeout(() => setCopied(false), 1500);
   }
 
-  if (!circleEnabled) return null;
+  if (!circleEnabled) {
+    // Mainnet without a live Circle key: say so instead of silently hiding the option.
+    return IS_MAINNET && circleUnavailableReason
+      ? <p className="hint" style={{ marginTop: 8 }}>{circleUnavailableReason}</p>
+      : null;
+  }
 
   if (stage === "closed")
     return (
@@ -138,9 +144,14 @@ export default function PasskeyPay({ orderId, merchant, amount, splitId, onPaid 
       <p className="hint">Balance: {balance === null ? "…" : `${balance} USDC`}</p>
       {!enough && (
         <p className="hint">
-          This wallet needs {amount} USDC. On testnet, fund it from{" "}
-          <a href="https://faucet.circle.com" target="_blank" rel="noreferrer">faucet.circle.com</a>{" "}
-          (select Arc Testnet, paste the address above). Balance refreshes automatically.
+          This wallet needs {amount} USDC.{" "}
+          {IS_MAINNET ? (
+            <>Send USDC to the address above on {NET.chainName} (or bridge in via CCTP from any chain). Balance refreshes automatically.</>
+          ) : (
+            <>On testnet, fund it from{" "}
+              <a href="https://faucet.circle.com" target="_blank" rel="noreferrer">faucet.circle.com</a>{" "}
+              (select Arc Testnet, paste the address above). Balance refreshes automatically.</>
+          )}
         </p>
       )}
       <p className="hint">Gas is tiny and comes out of this wallet's USDC. When sponsorship is available, it's free.</p>

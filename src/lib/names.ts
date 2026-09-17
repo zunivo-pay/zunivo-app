@@ -1,6 +1,6 @@
 import { createPublicClient, createWalletClient, custom, http, parseAbi, isAddress } from "viem";
 import { getEth, requestAccounts } from "./provider";
-import { arcTestnet, arcTransport, CHAIN_PARAMS_FOR_WALLET } from "./chain";
+import { arcChain, arcTransport, CHAIN_PARAMS_FOR_WALLET, CONTRACTS, NAMES_DEPLOY_BLOCK as _DEPLOY_BLOCK } from "./chain";
 
 /** Public-RPC calls from browsers get rate-limited on busy days — retry with backoff. */
 async function withRetry<T>(fn: () => Promise<T>, tries = 3): Promise<T> {
@@ -15,12 +15,8 @@ async function withRetry<T>(fn: () => Promise<T>, tries = 3): Promise<T> {
 }
 
 
-export const NAMES_ADDRESS = ((import.meta.env.VITE_NAMES_ADDRESS as string | undefined) ??
-  "0x83c4081Be1c85b12FF92Aa912A53700Fb994A4D8") as `0x${string}`;
-
-export const NAMES_DEPLOY_BLOCK = BigInt(
-  (import.meta.env.VITE_NAMES_DEPLOY_BLOCK as string | undefined) ?? "52962779"
-);
+export const NAMES_ADDRESS = CONTRACTS.names;
+export const NAMES_DEPLOY_BLOCK = _DEPLOY_BLOCK;
 
 export const NAMES_ABI = parseAbi([
   "function mint(string label) payable returns (uint256)",
@@ -30,7 +26,7 @@ export const NAMES_ABI = parseAbi([
   "event NameRegistered(string name, uint256 indexed tokenId, address indexed holder, uint256 pricePaid)",
 ]);
 
-const pub = createPublicClient({ chain: arcTestnet, transport: arcTransport() });
+const pub = createPublicClient({ chain: arcChain, transport: arcTransport() });
 
 export const LABEL_RE = /^[a-z0-9][a-z0-9-]{1,18}[a-z0-9]$/;
 
@@ -87,7 +83,7 @@ async function walletFor(): Promise<{ wallet: any; account: `0x${string}` }> {
       await eth.request({ method: "wallet_addEthereumChain", params: [CHAIN_PARAMS_FOR_WALLET] });
     } else throw e;
   }
-  return { wallet: createWalletClient({ chain: arcTestnet, transport: custom(eth) }), account };
+  return { wallet: createWalletClient({ chain: arcChain, transport: custom(eth) }), account };
 }
 
 export async function mintName(label: string, price: bigint): Promise<`0x${string}`> {
