@@ -107,8 +107,14 @@ export const arcTestnet = arcChain;
 export const arcTransport = () =>
   fallback(ARC_RPCS.map((u) => http(u, { timeout: 6_000, retryCount: 0 })), { rank: true });
 
+/**
+ * Per-address overrides are OFF unless VITE_CONTRACT_OVERRIDES=1. Vite merges
+ * `.env` into every mode, so a stray VITE_NAMES_ADDRESS from a dev .env would
+ * otherwise silently pin the wrong chain's contract into a mainnet build.
+ */
+const OVERRIDES_ON = String(import.meta.env.VITE_CONTRACT_OVERRIDES ?? "") === "1";
 const addr = (env: unknown, fallbackAddr: string): `0x${string}` => {
-  const v = typeof env === "string" && env.trim() ? env.trim() : fallbackAddr;
+  const v = OVERRIDES_ON && typeof env === "string" && env.trim() ? env.trim() : fallbackAddr;
   return v as `0x${string}`;
 };
 export const CONTRACTS = {
@@ -120,7 +126,7 @@ export const CONTRACTS = {
 };
 export const ROUTER_ADDRESS = CONTRACTS.router;
 export const NAMES_DEPLOY_BLOCK = BigInt(
-  (import.meta.env.VITE_NAMES_DEPLOY_BLOCK as string | undefined) ?? NET.namesDeployBlock,
+  (OVERRIDES_ON && (import.meta.env.VITE_NAMES_DEPLOY_BLOCK as string | undefined)) || NET.namesDeployBlock,
 );
 
 export const ROUTER_ABI = [
