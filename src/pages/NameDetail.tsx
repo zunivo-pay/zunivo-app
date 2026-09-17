@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { EXPLORER } from "../lib/chain";
 import { Link, useParams } from "react-router-dom";
 import { useWalletAccount, pickPrimary, setPrimaryName } from "../lib/useAccount";
 import {
@@ -8,7 +9,7 @@ import { getAgentCard, saveAgentCard, RECORDS_ENABLED, RECORDS_ADDRESS, AGENT_KE
 import NameCard from "../lib/NameCard";
 import { isAddress } from "viem";
 
-const EXPLORER = "https://testnet.arcscan.app";
+
 const ZERO = "0x0000000000000000000000000000000000000000";
 
 /** Premium single-name page: big NFT, payment routing, agent card, on-chain refs. */

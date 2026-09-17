@@ -3,6 +3,8 @@
  *  - WalletConnect: QR pairing for mobile wallets (enabled when VITE_WC_PROJECT_ID is set)
  *  Everything else in the app asks getEth() instead of touching window.ethereum. */
 
+import { NET, IS_MAINNET } from "./chain";
+
 export type WalletInfo = { uuid: string; name: string; icon: string; rdns: string };
 type Detail = { info: WalletInfo; provider: any };
 
@@ -44,9 +46,9 @@ export function connectedWalletName(): string {
   return selectedName || ((window as any).ethereum ? "Browser wallet" : "");
 }
 export function hasWalletConnect(): boolean {
-  // Opt-in via VITE_ENABLE_WC. Kept off on testnet: mobile wallets don't have
-  // Arc's custom chain (5042002), so QR pairing can't complete a usable session.
-  // Re-enable at mainnet when a widely-recognized chain id is available.
+  // Opt-in via VITE_ENABLE_WC. Mobile wallets only complete a usable session for
+  // chains they recognise; Arc mainnet (5042) is in the public chain lists, the
+  // testnet id often isn't — so the switch stays per-build.
   return Boolean(import.meta.env.VITE_ENABLE_WC) && Boolean(import.meta.env.VITE_WC_PROJECT_ID);
 }
 
@@ -70,13 +72,13 @@ function initWalletConnect(projectId: string): Promise<any> {
     wcInit = import("@walletconnect/ethereum-provider").then(({ EthereumProvider }) =>
       EthereumProvider.init({
         projectId,
-        chains: [5042002],
+        chains: [NET.chainId],
         showQrModal: true,
-        rpcMap: { 5042002: "https://rpc.testnet.arc.network" },
+        rpcMap: { [NET.chainId]: NET.rpcs[0] },
         metadata: {
-          name: "Zunivo",
+          name: IS_MAINNET ? "Zunivo" : "Zunivo (testnet)",
           description: "USDC payments & names on Arc",
-          url: "https://app.zunivo.io",
+          url: NET.appUrl,
           icons: ["https://zunivo.io/favicon.svg"],
         },
       }),

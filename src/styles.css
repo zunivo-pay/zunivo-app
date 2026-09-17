@@ -30,6 +30,14 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--indigo); outlin
 .ablogo { display: flex; align-items: center; gap: 9px; color: var(--ink); }
 .ablogo span { font-family: var(--disp); font-weight: 600; font-size: 19px; }
 .ablogo:hover { text-decoration: none; }
+/* network badge (v0.19): tells you which Arc you're on; links to the other env */
+.netbadge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .02em; padding: 4px 10px 4px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--slate); text-transform: uppercase; }
+.netbadge:hover { text-decoration: none; border-color: var(--slate-l); color: var(--ink); }
+.netbadge .netdot { width: 7px; height: 7px; border-radius: 50%; background: var(--slate-l); }
+.netbadge.mainnet { color: var(--mint-dark); border-color: rgba(11,143,99,.35); }
+.netbadge.mainnet .netdot { background: var(--mint-l); box-shadow: 0 0 0 3px rgba(16,196,139,.18); }
+.netbadge.testnet { color: #8A6D00; border-color: rgba(201,160,0,.4); background: #FFF8DF; }
+.netbadge.testnet .netdot { background: #E0B400; }
 .abnav { margin-left: auto; display: flex; gap: 6px; }
 .abnav a { color: var(--slate); font-size: 14px; font-weight: 500; padding: 7px 14px; border-radius: 999px; }
 .abnav a:hover { color: var(--ink); text-decoration: none; }
@@ -243,6 +251,7 @@ table.tx tr:hover td { background: var(--card2); }
 @media (max-width: 640px) {
   .abwrap { padding: 0 12px; gap: 8px; height: 54px; }
   .ablogo span { font-size: 17px; }
+  .netbadge { padding: 3px 7px 3px 6px; font-size: 10.5px; }
   .abnav { gap: 2px; overflow-x: auto; scrollbar-width: none; }
   .abnav::-webkit-scrollbar { display: none; }
   .abnav a { padding: 6px 11px; font-size: 13px; white-space: nowrap; }

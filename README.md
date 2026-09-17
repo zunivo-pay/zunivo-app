@@ -23,17 +23,30 @@ React + Vite + viem (multi-RPC fallback transport) · EIP-6963 wallet
 discovery + WalletConnect QR · Circle Modular Wallets passkey checkout ·
 paper-light design system shared with [zunivo.io](https://zunivo.io).
 
+## Networks — two deployments, one switch
+
+| Build | `VITE_NETWORK` | Chain | Contracts | API |
+|---|---|---|---|---|
+| [app.zunivo.io](https://app.zunivo.io) | `mainnet` | Arc mainnet (5042) | v1.3, verified on [arc.etherscan.io](https://arc.etherscan.io) | api.zunivo.io |
+| [testnet.zunivo.io](https://testnet.zunivo.io) | `testnet` | Arc testnet (5042002) | sandbox set | testnet-api.zunivo.io |
+
+`src/lib/chain.ts` derives the chain definition, RPC gateways, explorer, wallet
+chain-params and every contract address from that one variable. The header
+badge shows which network you're on and links to the other. Real money on
+mainnet; passkey pay there is gated until a live Circle client key is set.
+
 ## Run
 
 ```bash
 npm install
-npm run dev     # local
-npm run build   # dist/ → any static host (SPA rewrite all routes to /index.html)
+npm run dev              # local (.env → testnet + localhost API)
+npm run build            # mainnet bundle  (.env.production)
+npm run build:testnet    # testnet bundle  (.env.testnet)
 ```
 
-Key env (`.env` / `.env.production`): `VITE_API_URL`, `VITE_ROUTER_ADDRESS`,
-`VITE_NAMES_ADDRESS`, `VITE_RECORDS_ADDRESS`, `VITE_WC_PROJECT_ID`,
-`VITE_ENABLE_WC`, `VITE_CIRCLE_CLIENT_KEY`.
+Key env: `VITE_NETWORK`, `VITE_API_URL`, `VITE_WC_PROJECT_ID`, `VITE_ENABLE_WC`,
+`VITE_CIRCLE_CLIENT_KEY`, optional `VITE_RPC_URL` (dedicated RPC) and
+`VITE_*_ADDRESS` overrides.
 
 ## Related
 

@@ -14,12 +14,21 @@ import {
   encodeTransfer,
   ContractAddress,
 } from "@circle-fin/modular-wallets-core";
-import { arcTestnet, ROUTER_ABI, ROUTER_ADDRESS } from "./chain";
+import { arcChain, ROUTER_ABI, ROUTER_ADDRESS, NET, IS_MAINNET } from "./chain";
 
 const clientKey = import.meta.env.VITE_CIRCLE_CLIENT_KEY as string | undefined;
 const clientUrl = import.meta.env.VITE_CIRCLE_CLIENT_URL as string | undefined;
 
-export const circleEnabled = Boolean(clientKey && clientUrl);
+// A Circle client key is environment-specific: TEST_ keys only work against Circle's
+// testnet endpoints. On a mainnet build, refuse to enable passkey pay with a test key so
+// the UI shows "coming soon" instead of failing mid-payment.
+const keyLooksTest = /^\s*TEST_/i.test(clientKey ?? "");
+export const circleEnabled = Boolean(clientKey && clientUrl) && !(IS_MAINNET && keyLooksTest);
+export const circleUnavailableReason = circleEnabled
+  ? null
+  : IS_MAINNET
+    ? "Passkey pay on Arc mainnet is coming soon — pay with your wallet for now."
+    : "Passkey pay is not configured on this deployment.";
 
 const CRED_KEY = "zunivo_passkey_credential";
 
@@ -33,7 +42,7 @@ async function bundlerFees() {
   // the public RPC rate-limits by IP, and a failed quote used to collapse
   // our bid to the floor, leaving ops accepted but never bundled.
   const { modular } = transports();
-  const client = createPublicClient({ chain: arcTestnet, transport: modular });
+  const client = createPublicClient({ chain: arcChain, transport: modular });
   let gasPrice = 0n;
   let tip = 0n;
   try { gasPrice = await client.getGasPrice(); } catch {}
@@ -73,7 +82,7 @@ function transports() {
   if (!clientKey || !clientUrl) throw new Error("Circle client key/url not configured");
   return {
     passkey: toPasskeyTransport(clientUrl, clientKey),
-    modular: withCapture(toModularTransport(`${clientUrl}/arcTestnet`, clientKey)),
+    modular: withCapture(toModularTransport(`${clientUrl}/${NET.circleChainPath}`, clientKey)),
   };
 }
 
@@ -113,14 +122,14 @@ export async function passkeyLogin(): Promise<P256Credential> {
 
 export async function smartAccountFor(credential: P256Credential): Promise<SmartAccount> {
   const { modular } = transports();
-  const client = createPublicClient({ chain: arcTestnet, transport: modular });
+  const client = createPublicClient({ chain: arcChain, transport: modular });
   // type-cast: Circle SDK ships its own nested viem 2.23 typings; structurally identical at runtime
   return toCircleSmartAccount({ client: client as any, owner: toWebAuthnAccount({ credential }) });
 }
 
 export async function smartAccountBalance(address: `0x${string}`): Promise<string> {
   const { modular } = transports();
-  const client = createPublicClient({ chain: arcTestnet, transport: modular });
+  const client = createPublicClient({ chain: arcChain, transport: modular });
   return formatEther(await client.getBalance({ address }));
 }
 
@@ -136,7 +145,7 @@ export async function payWithPasskey(
   callOverride?: { to: `0x${string}`; value: bigint; data: `0x${string}` }
 ): Promise<{ txHash: `0x${string}`; gasless: boolean }> {
   const { modular } = transports();
-  const bundler = createBundlerClient({ chain: arcTestnet, transport: modular });
+  const bundler = createBundlerClient({ chain: arcChain, transport: modular });
   const calls = [
     callOverride ?? {
       to: ROUTER_ADDRESS,
@@ -166,7 +175,7 @@ export async function payWithPasskey(
  *  Sends two micro self-transfers (1 base unit, funds never leave the wallet). */
 export async function diagnoseUserOps(account: SmartAccount): Promise<string> {
   const { modular } = transports();
-  const bundler = createBundlerClient({ chain: arcTestnet, transport: modular });
+  const bundler = createBundlerClient({ chain: arcChain, transport: modular });
   const results: string[] = [];
 
   const fees = await bundlerFees();
@@ -183,7 +192,7 @@ export async function diagnoseUserOps(account: SmartAccount): Promise<string> {
 
   await probe("native-value call", [{ to: account.address, value: 1n }]);
   await probe("erc20-transfer call", [
-    encodeTransfer(account.address, ContractAddress.ArcTestnet_USDC, 1n),
+    encodeTransfer(account.address, IS_MAINNET ? ContractAddress.Arc_USDC : ContractAddress.ArcTestnet_USDC, 1n),
   ]);
   await probe("router-pay call (1 wei to self)", [
     {

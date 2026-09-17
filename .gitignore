@@ -5,3 +5,4 @@ tsconfig.tsbuildinfo
 .vercel
 .env.production
 .fuse_hidden*
+.env.testnet

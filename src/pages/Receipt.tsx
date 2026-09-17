@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { EXPLORER } from "../lib/chain";
 import { useParams } from "react-router-dom";
 import { Brand } from "../lib/Logo";
 import { API, getOrder, OrderView } from "../lib/api";
 
-const EXPLORER = "https://testnet.arcscan.app";
+
 
 export default function Receipt() {
   const { id } = useParams();

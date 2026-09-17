@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { EXPLORER } from "../lib/chain";
 import { Link } from "react-router-dom";
 import { listAgents, type DirectoryAgent } from "../lib/records";
 import NameCard from "../lib/NameCard";
 
-const EXPLORER = "https://testnet.arcscan.app";
+
 
 /** On-chain records are attacker-controlled input — only ever link to https URLs. */
 const safeHttps = (u?: string) => (u && /^https:\/\/[^\s]+$/i.test(u) ? u : null);

@@ -4,6 +4,7 @@ import ConnectModal from "./ConnectModal";
 import { APPKIT_ENABLED, AppKitConnectButton } from "./appkit";
 import { getEth } from "./provider";
 import { useDisplayName } from "./useAccount";
+import { IS_MAINNET, NET, NETWORK_LABEL } from "./chain";
 
 const CONTRACTS = "https://zunivo.io/#trust";
 
@@ -38,6 +39,14 @@ export default function Shell({ children, dark = false }: { children: React.Reac
             </svg>
             <span>zunivo</span>
           </Link>
+          <a
+            className={IS_MAINNET ? "netbadge mainnet" : "netbadge testnet"}
+            href={NET.siblingAppUrl}
+            title={`This is ${NETWORK_LABEL}. Switch to ${NET.siblingLabel} ↗`}
+          >
+            <span className="netdot" />
+            {IS_MAINNET ? "Mainnet" : "Testnet"}
+          </a>
           <nav className="abnav">
             <Link className={cls("/")} to="/">Get paid</Link>
             <Link className={cls("/send")} to="/send">Send</Link>
@@ -57,7 +66,7 @@ export default function Shell({ children, dark = false }: { children: React.Reac
       <ConnectModal open={cmOpen} onClose={() => setCmOpen(false)} account={account} onAccount={setAccount} />
       <main className="abmain">{children}</main>
       <footer className="abfoot">
-        <span>Powered by <b>zunivo</b> · Arc Testnet</span>
+        <span>Powered by <b>zunivo</b> · {NETWORK_LABEL} · <a href={NET.siblingAppUrl}>{NET.siblingLabel} ↗</a></span>
         <a href={CONTRACTS} target="_blank" rel="noreferrer">verified contracts ↗</a>
       </footer>
     </div>

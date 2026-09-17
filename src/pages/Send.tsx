@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { EXPLORER } from "../lib/chain";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { isAddress, keccak256, toHex } from "viem";
 import { API, createOrder } from "../lib/api";
@@ -289,7 +290,7 @@ export default function Send() {
             {schedTx ? (
               <p className="foot-note">
                 <span className="sealed">Locked on-chain ✓</span>{" "}
-                <a className="txlink" href={`https://testnet.arcscan.app/tx/${schedTx}`} target="_blank" rel="noreferrer">view transaction ↗</a>
+                <a className="txlink" href={`${EXPLORER}/tx/${schedTx}`} target="_blank" rel="noreferrer">view transaction ↗</a>
                 <br />The beneficiary can already see this commitment — countdown and all — in their dashboard.
               </p>
             ) : (

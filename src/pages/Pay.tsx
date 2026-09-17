@@ -5,7 +5,7 @@ import {
   createWalletClient, createPublicClient, custom, http,
   parseEther, keccak256, toHex, isAddress,
 } from "viem";
-import { arcTestnet, arcTransport, ROUTER_ABI, ROUTER_ADDRESS, EXPLORER, CHAIN_PARAMS_FOR_WALLET } from "../lib/chain";
+import { arcChain, arcTransport, ROUTER_ABI, ROUTER_ADDRESS, EXPLORER, CHAIN_PARAMS_FOR_WALLET, NETWORK_LABEL } from "../lib/chain";
 import { API, getOrder } from "../lib/api";
 import { splitPayCall, SPLIT_ADDRESS, SPLIT_ABI } from "../lib/split";
 import { Brand, ZunivoMark } from "../lib/Logo";
@@ -65,7 +65,7 @@ export default function Pay() {
         } else throw switchErr;
       }
       setPhase("paying");
-      const wallet = createWalletClient({ chain: arcTestnet, transport: custom(eth) });
+      const wallet = createWalletClient({ chain: arcChain, transport: custom(eth) });
       const hash = splitId
         ? await wallet.writeContract({
             account,
@@ -85,7 +85,7 @@ export default function Pay() {
           });
       setTxHash(hash);
       setPhase("confirming");
-      const pub = createPublicClient({ chain: arcTestnet, transport: arcTransport() });
+      const pub = createPublicClient({ chain: arcChain, transport: arcTransport() });
       const receipt = await pub.waitForTransactionReceipt({ hash });
       if (receipt.status !== "success") throw new Error("Transaction reverted.");
       setPhase("done");
@@ -153,10 +153,10 @@ export default function Pay() {
         {err && <p className="err">{err}</p>}
         <p className="steps">
           Non-custodial: your USDC goes straight to the recipient in one on-chain
-          transaction. Gas is paid in USDC on Arc Testnet.
+          transaction. Gas is paid in USDC on {NETWORK_LABEL}.
         </p>
       </div>
-      <p className="foot">Powered by <b>zunivo</b> · Arc Testnet</p>
+      <p className="foot">Powered by <b>zunivo</b> · {NETWORK_LABEL}</p>
     </div>
   );
 }

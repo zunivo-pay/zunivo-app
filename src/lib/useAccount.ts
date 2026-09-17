@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createPublicClient, formatEther } from "viem";
 import { getEth, subscribeWallets } from "./provider";
 import { namesOf } from "./names";
-import { arcTestnet, arcTransport } from "./chain";
+import { arcChain, arcTransport } from "./chain";
 
 /** The account already connected anywhere in the app (AppKit, modal, or a
  *  previous page) — detected silently, kept in sync on wallet/account switch. */
@@ -39,7 +39,7 @@ export function useWalletAccount(): `0x${string}` | null {
   return acct;
 }
 
-const pub = createPublicClient({ chain: arcTestnet, transport: arcTransport() });
+const pub = createPublicClient({ chain: arcChain, transport: arcTransport() });
 
 /** Native balance on Arc IS the USDC balance (gas token, 18 decimals). */
 export function useUsdcBalance(address: string | null | undefined): string | null {

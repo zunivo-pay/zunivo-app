@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { EXPLORER } from "../lib/chain";
 import { useWalletAccount } from "../lib/useAccount";
 import { ingestNameTx } from "../lib/api";
 import { APPKIT_ENABLED, openConnectModal } from "../lib/appkit";
@@ -13,7 +14,7 @@ import {
   parseHandle, displayName, tokenIdOf, NAMES_ADDRESS,
 } from "../lib/names";
 
-const EXPLORER = "https://testnet.arcscan.app";
+
 
 export default function Names() {
   const [query, setQuery] = useState("");
