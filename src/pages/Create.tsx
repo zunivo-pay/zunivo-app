@@ -151,7 +151,7 @@ export default function Create() {
     <div className="split">
       <div className="pagehead">
         <h1>Create a payment link</h1>
-        <p>Share one link. Get paid in USDC on Arc, instantly — the preview shows exactly what your payer sees.</p>
+        <p>Make a link, send it to whoever owes you. They pay in USDC on Arc and it lands in your wallet. The preview on the right is what they will see.</p>
       </div>
 
       <div className="card">
@@ -160,18 +160,18 @@ export default function Create() {
           <button type="button" className={`scenario ${rmode === "single" ? "on" : ""}`}
             onClick={() => { setRmode("single"); setLink(null); }}>
             <h4>One recipient</h4>
-            <p>A link for a specific amount — like an invoice.</p>
+            <p>One link, one amount. Works like an invoice.</p>
           </button>
           <button type="button" className={`scenario ${rmode === "split" ? "on" : ""}`}
             onClick={() => { setRmode("split"); setLink(null); }}>
             <h4>Split automatically</h4>
-            <p>One payment, divided on-chain between 2–20 recipients.</p>
+            <p>One payment that gets split between 2 to 20 addresses in the same transaction.</p>
           </button>
           <button type="button" className={`scenario ${rmode === "receive" ? "on" : ""}`}
             onClick={() => { setRmode("receive"); setLink(null); setErr(null); }}>
             <h4>My receive code</h4>
-            <p>One permanent QR — scan &amp; pay, any amount.</p>
-            <p className="aud">Print it · pin it in chats</p>
+            <p>A QR code for your address. Anyone can scan it and send any amount.</p>
+            <p className="aud">Print it, or pin it in a group chat</p>
           </button>
         </div>
 
@@ -204,8 +204,8 @@ export default function Create() {
             <button type="button" className="linkbtn" onClick={addPayee}>+ add recipient</button>
           )}
           <p className="hint" style={{ marginTop: 8 }}>
-            The share table is written to the chain and can never be edited — what your
-            collaborators see is what will always execute. Creating it takes one wallet signature.
+            The recipients and percentages are stored in the contract when you create the split and can't be edited afterwards.
+            Creating it is one wallet signature.
           </p>
         </>)}
 
@@ -224,7 +224,7 @@ export default function Create() {
           {busy ? "Creating…" : rmode === "receive" ? "Generate my code" : "Generate link"}
         </button>
         <p className="hint" style={{ marginTop: 12 }}>
-          Non-custodial: funds go straight to your wallet in one on-chain transaction.
+          The payment goes straight to your wallet. We never hold it.
         </p>
       </div>
 
@@ -255,7 +255,7 @@ export default function Create() {
             )}
             {memo && <p className="memo">“{memo}”</p>}
             <button className="pv-btn" disabled>Pay {amount || "…"} USDC</button>
-            <p className="pv-note">Any wallet — or no wallet at all, with a passkey.</p>
+            <p className="pv-note">Pays with any wallet, or with a passkey if they don't have one.</p>
           </div>
         )}
 

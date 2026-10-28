@@ -194,7 +194,7 @@ export default function Dashboard() {
       <div className="pagehead" style={{ display: "flex", alignItems: "flex-end", gap: 14, flexWrap: "wrap" }}>
         <div style={{ flex: 1, minWidth: 220 }}>
           <h1>Dashboard</h1>
-          <p>Everything this address earns, owes, and has promised — reconciled from the chain.</p>
+          <p>What this address has received, sent, and has locked up, read from the chain.</p>
         </div>
         {activeAddr && (
           <button className="linkbtn" style={{ fontSize: 12.5, paddingBottom: 6 }}
@@ -315,7 +315,7 @@ export default function Dashboard() {
               {activity.length === 0 && (
                 <div className="dempty">
                   <p>Nothing here yet.</p>
-                  <p className="hint">Create a <Link to="/">payment link</Link> or <Link to="/send">send USDC</Link> — every movement lands here with an on-chain receipt.</p>
+                  <p className="hint">Create a <Link to="/">payment link</Link> or <Link to="/send">send USDC</Link> and it will show up here.</p>
                 </div>
               )}
               <div className="actlist">
@@ -389,7 +389,7 @@ export default function Dashboard() {
               {(!sched || schedCount === 0) && (
                 <div className="dempty">
                   <p>No scheduled sends touch this address yet.</p>
-                  <p className="hint">Lock a future payment from the <Link to="/send">Send</Link> page — payroll, rent, milestones.</p>
+                  <p className="hint">You can lock a future payment from the <Link to="/send">Send</Link> page.</p>
                 </div>
               )}
               {sched && sched.incoming.length > 0 && (

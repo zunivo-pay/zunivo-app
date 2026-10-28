@@ -116,7 +116,7 @@ export default function Pay() {
             </svg>
           </div>
           <h2>Paid {amount} USDC</h2>
-          <p className="sub">Settled on Arc — funds are already in the recipient's wallet.</p>
+          <p className="sub">Done. The USDC is in the recipient's wallet.</p>
           {txHash && (
             <p><a className="txlink" href={`${EXPLORER}/tx/${txHash}`} target="_blank" rel="noreferrer">View on ArcScan ↗</a></p>
           )}
@@ -152,8 +152,7 @@ export default function Pay() {
           onPaid={(tx) => { setTxHash(tx); setPhase("done"); }} />
         {err && <p className="err">{err}</p>}
         <p className="steps">
-          Non-custodial: your USDC goes straight to the recipient in one on-chain
-          transaction. Gas is paid in USDC on {NETWORK_LABEL}.
+          Your USDC goes straight to the recipient in one transaction on {NETWORK_LABEL}. Gas is paid in USDC too.
         </p>
       </div>
       <p className="foot">Powered by <b>zunivo</b> · {NETWORK_LABEL}</p>

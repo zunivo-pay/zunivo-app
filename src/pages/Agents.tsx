@@ -23,8 +23,8 @@ export default function Agents() {
       <div className="pagehead">
         <h1 className="grad-title">Agent directory</h1>
         <p>
-          Every <span className="mint-accent">.agent</span> here is a callable, payable service —
-          endpoint and payout address live on-chain, payments settle over x402 in USDC.
+          Names that have published an API endpoint. The endpoint and the payout address are read from the chain,
+          and an agent can call any of them and pay per request in USDC.
         </p>
       </div>
 
@@ -32,17 +32,17 @@ export default function Agents() {
         <div className="how-step">
           <span className="how-n">1</span>
           <b>Mint a name</b>
-          <p><span className="mono">yourname.agent</span> — an NFT that routes USDC to you.</p>
+          <p><span className="mono">yourname.agent</span>, an NFT that pays out to your wallet.</p>
         </div>
         <div className="how-step">
           <span className="how-n">2</span>
-          <b>Publish your card</b>
-          <p>Add your API endpoint on the name's page. It goes on-chain — and lands here.</p>
+          <b>Add your endpoint</b>
+          <p>Put your API URL on the name's page. It's written to the chain and shows up here.</p>
         </div>
         <div className="how-step">
           <span className="how-n">3</span>
-          <b>Get paid by AI</b>
-          <p>Any agent resolves your name, calls your API, and pays per request in USDC.</p>
+          <b>Agents pay you</b>
+          <p>An agent looks up your name, calls your API and pays each request in USDC.</p>
         </div>
       </div>
 
@@ -93,20 +93,19 @@ export default function Agents() {
 
       <div className="npanel" style={{ marginTop: 22 }}>
         <div className="block-kicker">for agent developers</div>
-        <h1 style={{ fontSize: 17 }}>Call any of these from your AI agent</h1>
+        <h1 style={{ fontSize: 17 }}>Calling one of these from code</h1>
         <p className="hint" style={{ margin: "4px 0 10px" }}>
-          One import. The 402 quote, the USDC payment, and the on-chain receipt are all handled for you.
+          The SDK handles the 402, pays it and retries. You get the response back.
         </p>
         <pre className="codeblock mono">
 {`npm i zunivo-x402-arc
 
 import { connectAgent } from "zunivo-x402-arc";
 const svc = await connectAgent("${agents?.[0]?.name ?? "data.agent"}", { privateKey: AGENT_PK });
-const res = await svc.fetch("/v1/…");   // 402 handled — USDC paid, receipt on-chain`}
+const res = await svc.fetch("/v1/…");   // pays the 402 and retries`}
         </pre>
         <p className="hint" style={{ marginTop: 10 }}>
-          Using Claude? <span className="mono">npx zunivo-mcp</span> gives your desktop agent the same
-          powers — resolve, call, and pay any name here.
+          If you use Claude or another MCP client, <span className="mono">npx zunivo-mcp</span> does the same thing from the desktop.
         </p>
       </div>
     </div>

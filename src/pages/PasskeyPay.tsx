@@ -121,7 +121,7 @@ export default function PasskeyPay({ orderId, merchant, amount, splitId, onPaid 
     return (
       <div className="pkbox">
         <p className="pk-title">Pay with a passkey</p>
-        <p className="hint">Your device creates a secure wallet — no extension, no seed phrase. Face ID / Touch ID confirms it.</p>
+        <p className="hint">Your phone or laptop makes a wallet and keeps the key. No extension, no seed phrase. Face ID or Touch ID to confirm.</p>
         <label>Name for this passkey</label>
         <input placeholder="e.g. alice" value={username} onChange={(e) => setUsername(e.target.value)} />
         <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
@@ -154,7 +154,7 @@ export default function PasskeyPay({ orderId, merchant, amount, splitId, onPaid 
           )}
         </p>
       )}
-      <p className="hint">Gas is tiny and comes out of this wallet's USDC. When sponsorship is available, it's free.</p>
+      <p className="hint">Gas is a fraction of a cent and comes out of this wallet's USDC.</p>
       <button className="btn" disabled={!enough || stage === "paying"} onClick={doPay}>
         {stage === "paying" ? "Paying — confirm with Face ID / Touch ID…" : `Pay ${amount} USDC`}
       </button>

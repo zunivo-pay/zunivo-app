@@ -79,7 +79,7 @@ export default function NameDetail() {
             {owns === true && !isPrimary && (
               <div style={{ marginTop: 10 }}>
                 <button className="linkbtn" style={{ fontSize: 13 }} onClick={makePrimary}>
-                  ☆ Set as primary name — shown as your identity across the app
+                  ☆ Use as my primary name
                 </button>
               </div>
             )}
@@ -100,7 +100,7 @@ export default function NameDetail() {
               </a>
             </div>
             <div className="rrow"><span>Token</span><span className="mono" style={{ fontSize: 12 }}>#{tokenIdOf(label).slice(0, 10)}…</span></div>
-            <p className="hint" style={{ marginTop: 12 }}>Art &amp; metadata are 100% on-chain — this exact card is what any wallet or marketplace renders.</p>
+            <p className="hint" style={{ marginTop: 12 }}>The image and metadata are stored in the contract. This is what wallets render.</p>
           </div>
         </div>
       </div>

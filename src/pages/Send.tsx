@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { EXPLORER } from "../lib/chain";
+import { EXPLORER, FEE_LABEL } from "../lib/chain";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { isAddress, keccak256, toHex } from "viem";
 import { API, createOrder } from "../lib/api";
@@ -151,7 +151,7 @@ export default function Send() {
     <div className="split">
       <div className="pagehead">
         <h1>Send USDC</h1>
-        <p>Pay anyone by name or address — instantly, or as a locked commitment they can count on.</p>
+        <p>Send USDC to a .agent name or an address. Now, or locked until a date you pick.</p>
       </div>
 
       <div className="card">
@@ -163,8 +163,8 @@ export default function Send() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" fill="#3D5AFE"/></svg>
               Send now
             </h4>
-            <p>Settles in under a second, receipt for both sides.</p>
-            <p className="aud">For splitting bills · paying a freelancer · refunds</p>
+            <p>Lands in about a second. Both of you get a receipt.</p>
+            <p className="aud">Bills, freelancers, refunds</p>
           </button>
           <button type="button" className={`scenario ${mode === "schedule" ? "on" : ""}`}
             onClick={() => { setMode("schedule"); touch(); }}>
@@ -172,8 +172,8 @@ export default function Send() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2.5" stroke="#10C48B" strokeWidth="2.4"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="#10C48B" strokeWidth="2.4"/></svg>
               Schedule &amp; commit
             </h4>
-            <p>Locked on-chain until a date — irrevocable once sent.</p>
-            <p className="aud">For payroll · rent · milestone payments</p>
+            <p>Locked in the contract until the date. Can't be pulled back once it's locked.</p>
+            <p className="aud">Payroll, rent, milestones</p>
           </button>
         </div>
 
@@ -268,16 +268,15 @@ export default function Send() {
             {resolved?.label && <div className="crow"><span>Resolves to</span><span>{short(resolved.addr)}</span></div>}
             {note && <div className="crow"><span>Note</span><span style={{ fontFamily: "var(--body)" }}>{note}</span></div>}
             <div className="crow"><span>Settlement</span><span>&lt; 1 second</span></div>
-            <div className="crow"><span>Route</span><span>non-custodial · atomic</span></div>
-            <div className="crow"><span>Fee</span><span>0%</span></div>
+            <div className="crow"><span>Route</span><span>payer → recipient, one tx</span></div>
+            <div className="crow"><span>Fee</span><span>{FEE_LABEL}</span></div>
             <p className="foot-note">
-              One on-chain transaction through the verified Zunivo router. Both of you get a
-              receipt, and it lands in each dashboard automatically.
+              One transaction through the ArcPayRouter contract. The receipt shows up in both dashboards.
             </p>
           </>
         ) : (
           <>
-            <p className="cert-kicker">commitment certificate</p>
+            <p className="cert-kicker">scheduled send</p>
             <div className="big">{amount || "0.00"}<small>USDC</small></div>
             <div className="crow"><span>Beneficiary</span><span>{resolved?.label ? displayName(resolved.label) : short(to)}</span></div>
             <div className="crow"><span>Unlocks</span><span>{whenText}</span></div>
@@ -286,18 +285,18 @@ export default function Send() {
                 ? <span className="badge refb">REFUNDABLE · 30D GRACE</span>
                 : <span className="badge lockb">IRREVOCABLE</span>}</span>
             </div>
-            <div className="crow"><span>Custody</span><span>keyless contract</span></div>
+            <div className="crow"><span>Held by</span><span>the contract, no admin key</span></div>
             {schedTx ? (
               <p className="foot-note">
                 <span className="sealed">Locked on-chain ✓</span>{" "}
                 <a className="txlink" href={`${EXPLORER}/tx/${schedTx}`} target="_blank" rel="noreferrer">view transaction ↗</a>
-                <br />The beneficiary can already see this commitment — countdown and all — in their dashboard.
+                <br />The recipient can already see it in their dashboard, with the countdown.
               </p>
             ) : (
               <p className="foot-note">
                 {allowReclaim
-                  ? "The beneficiary gets an exclusive 30-day window after unlock; only unclaimed funds can ever return to you."
-                  : "Once locked, no one can take this back — not you, not Zunivo. Release is permissionless after unlock, but funds can only flow to the beneficiary."}
+                  ? "After unlock the recipient has 30 days to claim it. If they don't, you can take it back."
+                  : "Once locked, nobody can take this back, including you and including us. After unlock anyone can trigger the release, but it can only go to the recipient."}
               </p>
             )}
             <p style={{ marginTop: 14 }}><ZunivoMark size={26} /></p>

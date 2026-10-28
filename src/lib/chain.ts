@@ -166,5 +166,8 @@ export const CHAIN_PARAMS_FOR_WALLET = {
   blockExplorerUrls: [NET.explorer],
 };
 
+/** Router fee shown in the UI (mainnet 50 bps; the testnet sandbox router runs at 0). */
+export const FEE_LABEL = IS_MAINNET ? "0.5%" : "0%";
+
 /** Human label for badges/footers: "Arc mainnet" / "Arc testnet". */
 export const NETWORK_LABEL = IS_MAINNET ? "Arc mainnet" : "Arc testnet";

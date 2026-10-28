@@ -83,7 +83,7 @@ export default function ConnectModal({
         )}
         {err && <p className="err">{err}</p>}
         <p className="hint" style={{ marginTop: 12 }}>
-          No wallet? Every payment page also accepts a passkey — no extension needed.
+          No wallet? Payment pages also take a passkey, no extension needed.
         </p>
       </div>
     </div>
