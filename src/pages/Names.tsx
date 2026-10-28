@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { EXPLORER, NETWORK_LABEL } from "../lib/chain";
+import { EXPLORER, NETWORK_LABEL, nftUrl } from "../lib/chain";
 import { useWalletAccount } from "../lib/useAccount";
 import { ingestNameTx } from "../lib/api";
 import { APPKIT_ENABLED, openConnectModal } from "../lib/appkit";
@@ -104,7 +104,7 @@ export default function Names() {
   }
 
   const tokenLink = (label: string) =>
-    `${EXPLORER}/token/${NAMES_ADDRESS}/instance/${tokenIdOf(label)}`;
+    nftUrl(NAMES_ADDRESS, tokenIdOf(label));
 
   return (
     <div className="shell wide">

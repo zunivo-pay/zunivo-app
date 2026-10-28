@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { EXPLORER } from "../lib/chain";
+import { EXPLORER, nftUrl } from "../lib/chain";
 import { Link, useParams } from "react-router-dom";
 import { useWalletAccount, pickPrimary, setPrimaryName } from "../lib/useAccount";
 import {
@@ -54,7 +54,7 @@ export default function NameDetail() {
     );
   }
 
-  const tokenLink = `${EXPLORER}/token/${NAMES_ADDRESS}/instance/${tokenIdOf(label)}`;
+  const tokenLink = nftUrl(NAMES_ADDRESS, tokenIdOf(label));
   const registered = payout !== null && payout !== ZERO;
 
   return (

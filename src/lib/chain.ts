@@ -156,6 +156,9 @@ export const ROUTER_ABI = [
 export const EXPLORER = NET.explorer;
 export const txUrl = (hash: string) => `${EXPLORER}/tx/${hash}`;
 export const addressUrl = (a: string) => `${EXPLORER}/address/${a}`;
+/** NFT page. Etherscan-style ArcScan on mainnet, Blockscout on testnet. */
+export const nftUrl = (contract: string, tokenId: string | bigint) =>
+  IS_MAINNET ? `${EXPLORER}/nft/${contract}/${tokenId}` : `${EXPLORER}/token/${contract}/instance/${tokenId}`;
 
 /** EIP-3085 params for wallet_addEthereumChain / wallet_switchEthereumChain. */
 export const CHAIN_PARAMS_FOR_WALLET = {
