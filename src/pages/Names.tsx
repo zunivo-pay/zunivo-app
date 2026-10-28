@@ -94,7 +94,7 @@ export default function Names() {
       setTxHash(hash);
       setMinted(checked);
       setAvailable(false);
-      // the receipt IS the proof — show the new name instantly
+      // the receipt IS the proof, show the new name instantly
       setMine((prev) => (prev.includes(checked!) ? prev : [checked!, ...prev]));
       // and fast-track the server so every other surface catches up in seconds
       ingestNameTx(hash).then(() => { if (account) loadMine(account); });

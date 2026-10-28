@@ -19,15 +19,14 @@ import { arcChain, ROUTER_ABI, ROUTER_ADDRESS, NET, IS_MAINNET } from "./chain";
 const clientKey = import.meta.env.VITE_CIRCLE_CLIENT_KEY as string | undefined;
 const clientUrl = import.meta.env.VITE_CIRCLE_CLIENT_URL as string | undefined;
 
-// A Circle client key is environment-specific: TEST_ keys only work against Circle's
-// testnet endpoints. On a mainnet build, refuse to enable passkey pay with a test key so
-// the UI shows "coming soon" instead of failing mid-payment.
+// TEST_ keys only work against Circle's testnet endpoints. On a mainnet build a test key
+// disables passkey pay instead of failing halfway through a payment.
 const keyLooksTest = /^\s*TEST_/i.test(clientKey ?? "");
 export const circleEnabled = Boolean(clientKey && clientUrl) && !(IS_MAINNET && keyLooksTest);
 export const circleUnavailableReason = circleEnabled
   ? null
   : IS_MAINNET
-    ? "Passkey pay on Arc mainnet is coming soon — pay with your wallet for now."
+    ? "Passkey pay isn't on mainnet yet. Pay with your wallet for now."
     : "Passkey pay is not configured on this deployment.";
 
 const CRED_KEY = "zunivo_passkey_credential";

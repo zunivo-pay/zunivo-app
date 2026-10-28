@@ -2,7 +2,7 @@ import { createPublicClient, createWalletClient, custom, http, parseAbi, isAddre
 import { getEth, requestAccounts } from "./provider";
 import { arcChain, arcTransport, CHAIN_PARAMS_FOR_WALLET, CONTRACTS, NAMES_DEPLOY_BLOCK as _DEPLOY_BLOCK } from "./chain";
 
-/** Public-RPC calls from browsers get rate-limited on busy days — retry with backoff. */
+/** Public-RPC calls from browsers get rate-limited on busy days, retry with backoff. */
 async function withRetry<T>(fn: () => Promise<T>, tries = 3): Promise<T> {
   let lastErr: any;
   for (let i = 0; i < tries; i++) {
@@ -62,7 +62,7 @@ export async function getMintPrice(): Promise<bigint> {
 }
 
 export async function namesOf(holder: `0x${string}`): Promise<string[]> {
-  // served by the Zunivo indexer — no public-RPC log scans from the browser
+  // served by the Zunivo indexer, no public-RPC log scans from the browser
   const api = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "");
   if (!api) return [];
   const r = await fetch(`${api}/api/names/${holder}`);

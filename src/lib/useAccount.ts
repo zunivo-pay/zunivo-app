@@ -5,7 +5,7 @@ import { namesOf } from "./names";
 import { arcChain, arcTransport } from "./chain";
 
 /** The account already connected anywhere in the app (AppKit, modal, or a
- *  previous page) — detected silently, kept in sync on wallet/account switch. */
+ *  previous page), detected silently, kept in sync on wallet/account switch. */
 export function useWalletAccount(): `0x${string}` | null {
   const [acct, setAcct] = useState<`0x${string}` | null>(null);
 
@@ -56,8 +56,7 @@ export function useUsdcBalance(address: string | null | undefined): string | nul
   return bal;
 }
 
-/** The user's chosen primary name for an address — a local preference,
- *  like a default card in a wallet. Falls back to the first owned name. */
+/** Primary name for an address. Local preference; falls back to the first owned name. */
 export function getPrimaryName(address: string): string | null {
   try { return localStorage.getItem(`zunivo_primary_${address.toLowerCase()}`); } catch { return null; }
 }
@@ -69,7 +68,7 @@ export function pickPrimary(address: string, names: string[]): string | null {
   return stored && names.includes(stored) ? stored : names[0] ?? null;
 }
 
-/** ENS-style courtesy: if the address owns a .agent name, show the (primary) name. */
+/** Show the primary .agent name for an address if it has one. */
 export function useDisplayName(address: string | null | undefined): string | null {
   const [name, setName] = useState<string | null>(null);
   useEffect(() => {

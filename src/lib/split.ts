@@ -48,7 +48,7 @@ export async function createSplitOnChain(
   return { splitId: created.args.splitId.toString(), creator: account };
 }
 
-/** Calldata for paying a split — used by both wallet and passkey paths. */
+/** Calldata for paying a split, used by both wallet and passkey paths. */
 export function splitPayCall(splitId: string, orderId: `0x${string}`, amount: string) {
   return {
     to: SPLIT_ADDRESS,

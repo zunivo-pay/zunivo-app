@@ -11,7 +11,7 @@ import { useWalletAccount, useUsdcBalance, pickPrimary, setPrimaryName } from ".
 
 type Tab = "overview" | "payments" | "scheduled" | "sent";
 
-/** 2-decimal money formatting everywhere — no floating-point tails, no bare "0". */
+/** 2-decimal money formatting everywhere, no floating-point tails, no bare "0". */
 const usd = (n: number | string) =>
   (Math.round(Number(n) * 100) / 100).toLocaleString("en-US", {
     minimumFractionDigits: 2, maximumFractionDigits: 2,
@@ -20,7 +20,7 @@ const fmtTime = (ts: number) =>
   new Date(ts * 1000).toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
 const short = (s: string) => `${s.slice(0, 6)}…${s.slice(-4)}`;
 
-/** Live clock — 1s tick so countdowns feel alive. */
+/** Live clock, 1s tick so countdowns feel alive. */
 function useNow(): number {
   const [now, setNow] = useState(() => Math.floor(Date.now() / 1000));
   useEffect(() => {
@@ -38,7 +38,7 @@ function fmtLeft(secs: number): string {
   return `${m}m ${String(s).padStart(2, "0")}s`;
 }
 
-/** "Unlocks in 2d 4h 12m" → "ready to claim" — the certainty, made visible. */
+/** "Unlocks in 2d 4h 12m" → "ready to claim", the certainty, made visible. */
 function Countdown({ unlockAt, status }: { unlockAt: number; status: string }) {
   const now = useNow();
   if (status === "released") return null;
@@ -66,7 +66,7 @@ export default function Dashboard() {
   const connected = useWalletAccount();
   const balance = useUsdcBalance(activeAddr || null);
 
-  // the dashboard should greet you loaded — pick up the app-wide connection
+  // the dashboard should greet you loaded, pick up the app-wide connection
   useEffect(() => {
     if (connected && !activeAddr && !busy) { setAddr(connected); load(connected); }
   }, [connected]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -157,7 +157,7 @@ export default function Dashboard() {
     <span className={`chip ${s === "released" || s === "paid" ? "paid" : "unpaid"}`}>{s}</span>
   );
 
-  /** One human feed: money in, money out, links still waiting — newest first. */
+  /** One human feed: money in, money out, links still waiting, newest first. */
   type Act = {
     key: string; ts: number; dir: "in" | "out" | "wait";
     title: string; amount: string; chip: string; href: string; ext?: boolean;

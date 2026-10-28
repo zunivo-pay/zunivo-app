@@ -51,7 +51,7 @@ export default function Create() {
     setCopied(false);
 
     if (rmode === "receive") {
-      // a durable "scan to pay me" code — opens the Send page prefilled
+      // scan-to-pay code, opens the Send page prefilled
       let id = merchant.trim();
       if (!id) return setErr("Connect a wallet or enter your address / name.");
       if (id.startsWith("@") || id.toLowerCase().endsWith(".agent")) {

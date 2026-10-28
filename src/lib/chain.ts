@@ -1,7 +1,7 @@
 import { defineChain, fallback, http } from "viem";
 
 /**
- * Network selection — ONE build-time switch for the whole app.
+ * Network selection, ONE build-time switch for the whole app.
  *
  *   VITE_NETWORK=mainnet   Arc mainnet, v1.3 contracts, real USDC   (app.zunivo.io)
  *   VITE_NETWORK=testnet   Arc testnet, sandbox contracts            (testnet.zunivo.io)
@@ -99,7 +99,7 @@ export const arcChain = defineChain({
   blockExplorers: { default: { name: NET.explorerName, url: NET.explorer } },
   testnet: !IS_MAINNET,
 });
-/** @deprecated name kept for existing imports — this is whichever chain the build targets. */
+/** @deprecated name kept for existing imports, this is whichever chain the build targets. */
 export const arcTestnet = arcChain;
 
 // Multi-gateway transport: races the RPC gateways, auto-fails-over on rate

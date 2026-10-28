@@ -1,39 +1,14 @@
-# zunivo app — [app.zunivo.io](https://app.zunivo.io)
+# zunivo app
 
-The human **and** agent surface of zunivo: non-custodial USDC payments on
-Circle's Arc, with `.agent` names as payable, discoverable identities.
+The web app at app.zunivo.io. React + Vite + viem.
 
-## What's inside
+Pages: payment links and splits (Get paid), send now or lock until a date (Send), mint and manage `.agent` names (Names), the directory of names that published an API endpoint (Agents), and a dashboard of what an address received, sent and has locked.
 
-- **Get paid** — payment links (invoice-style), atomic on-chain splits
-  (2–20 recipients), and a permanent personal **receive code** (scan → pay).
-- **Send** — pay by `.agent` name or address, with a local **contact book**,
-  recent recipients, live balance + MAX, recipient resolution preview, and
-  **scheduled sends** (funds locked on-chain until a date, live countdowns).
-- **Names** — mint `yourname.agent` (ERC-721, art 100% on-chain), premium
-  per-name page: payout routing, **agent card** (endpoint/x402/description →
-  on-chain service discovery), primary-name selection.
-- **Agents** — the public directory of callable, payable `.agent` services.
-- **Dashboard** — auto-loads your wallet: balance, settled/locked/committed
-  KPIs, unified in/out activity feed, unlock countdowns, CSV export.
+Wallets: any EIP-6963 extension, WalletConnect for mobile, or a Circle passkey wallet on the pay page.
 
-## Stack
+## Networks
 
-React + Vite + viem (multi-RPC fallback transport) · EIP-6963 wallet
-discovery + WalletConnect QR · Circle Modular Wallets passkey checkout ·
-paper-light design system shared with [zunivo.io](https://zunivo.io).
-
-## Networks — two deployments, one switch
-
-| Build | `VITE_NETWORK` | Chain | Contracts | API |
-|---|---|---|---|---|
-| [app.zunivo.io](https://app.zunivo.io) | `mainnet` | Arc mainnet (5042) | v1.3, verified on [arc.etherscan.io](https://arc.etherscan.io) | api.zunivo.io |
-| [testnet.zunivo.io](https://testnet.zunivo.io) | `testnet` | Arc testnet (5042002) | sandbox set | testnet-api.zunivo.io |
-
-`src/lib/chain.ts` derives the chain definition, RPC gateways, explorer, wallet
-chain-params and every contract address from that one variable. The header
-badge shows which network you're on and links to the other. Real money on
-mainnet; passkey pay there is gated until a live Circle client key is set.
+`VITE_NETWORK=mainnet` builds app.zunivo.io (Arc 5042, v1.3 contracts, api.zunivo.io). `VITE_NETWORK=testnet` builds testnet.zunivo.io (Arc 5042002, sandbox contracts, testnet-api.zunivo.io). `src/lib/chain.ts` derives everything else from that one variable. The header badge shows which one you're on.
 
 ## Run
 

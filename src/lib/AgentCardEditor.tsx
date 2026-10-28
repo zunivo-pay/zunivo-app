@@ -39,11 +39,11 @@ export default function AgentCardEditor({ label }: { label: string }) {
 
   return (
     <div className="agentcard-editor" style={{ display: "grid", gap: 6, marginTop: 8 }}>
-      <input style={{ fontSize: 12 }} placeholder="service endpoint — https://api.example.com"
+      <input style={{ fontSize: 12 }} placeholder="https://api.example.com"
         value={card.url ?? ""} onChange={set("url")} />
-      <input style={{ fontSize: 12 }} placeholder="x402 manifest URL (optional)"
+      <input style={{ fontSize: 12 }} placeholder="x402 manifest URL, optional"
         value={card.x402 ?? ""} onChange={set("x402")} />
-      <input style={{ fontSize: 12 }} placeholder="description — what does this agent sell?"
+      <input style={{ fontSize: 12 }} placeholder="what does this agent do?"
         value={card.description ?? ""} onChange={set("description")} />
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
         <button className="linkbtn" disabled={busy} onClick={save}>

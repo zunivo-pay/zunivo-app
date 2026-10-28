@@ -1,18 +1,12 @@
-/** AppKit has been removed from the bundle — this stub keeps the old exports.
+/** AppKit is out of the bundle. This stub keeps the old exports.
  *
- *  Root cause of the "blank WalletConnect QR" bug (2026-08): the app bundled
- *  TWO copies of @reown/appkit — ours (1.8.23, statically imported here even
- *  when the feature was disabled) and the one @walletconnect/ethereum-provider
- *  pins internally (1.8.19) to render its QR modal. Both register the same
- *  <w3m-*>/<wui-*> custom elements; Reown's registration helper silently skips
- *  duplicates, so the SDK's modal mounted OUR element classes, which subscribe
- *  to OUR never-initialized copy's state → an empty shell with no QR and no
- *  console error. Closing it made the SDK throw "Connection request reset".
- *
- *  Fix: no @reown import may exist in app code. The WalletConnect QR flow
- *  (lib/provider.ts → useWalletConnect) now uses ONLY the SDK's own copy.
- *  If AppKit is re-evaluated at mainnet, restore from git history and pin the
- *  app's @reown/appkit to the exact version ethereum-provider ships. */
+ *  Why: we shipped two copies of @reown/appkit (ours, and the one
+ *  @walletconnect/ethereum-provider pins for its QR modal). Both register the
+ *  same custom elements, the duplicate registration is skipped silently, and
+ *  the modal ended up bound to the copy that was never initialised. Blank QR,
+ *  no error. Don't import @reown anywhere in app code; the WC flow in
+ *  lib/provider.ts uses the SDK's own copy. If AppKit comes back, pin it to
+ *  the exact version ethereum-provider ships. */
 export const APPKIT_ENABLED = false;
 
 export function openConnectModal() {

@@ -194,9 +194,9 @@ function AgentCardSection({ label, card, canEdit, onSaved }: {
       )}
       {canEdit && editing && (
         <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
-          <input placeholder="service endpoint — https://api.example.com" value={form.url ?? ""} onChange={set("url")} />
-          <input placeholder="x402 manifest URL (optional)" value={form.x402 ?? ""} onChange={set("x402")} />
-          <input placeholder="description — what does this agent sell?" value={form.description ?? ""} onChange={set("description")} />
+          <input placeholder="https://api.example.com" value={form.url ?? ""} onChange={set("url")} />
+          <input placeholder="x402 manifest URL, optional" value={form.x402 ?? ""} onChange={set("x402")} />
+          <input placeholder="what does this agent do?" value={form.description ?? ""} onChange={set("description")} />
           <div style={{ display: "flex", gap: 10, marginTop: 2 }}>
             <button className="btn mintbtn" style={{ width: "auto", padding: "8px 18px", marginTop: 0 }} disabled={busy} onClick={save}>{busy ? "Publishing…" : "Publish"}</button>
             <button className="linkbtn" onClick={() => { setEditing(false); setErr(null); }}>cancel</button>

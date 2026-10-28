@@ -1,7 +1,5 @@
-/** Single source of truth for the wallet provider.
- *  - EIP-6963: discovers every installed extension wallet (MetaMask, OKX, Rabby, …)
- *  - WalletConnect: QR pairing for mobile wallets (enabled when VITE_WC_PROJECT_ID is set)
- *  Everything else in the app asks getEth() instead of touching window.ethereum. */
+/** Wallet provider. EIP-6963 for extension wallets, WalletConnect for mobile.
+ *  The rest of the app calls getEth() instead of touching window.ethereum. */
 
 import { NET, IS_MAINNET } from "./chain";
 
@@ -46,9 +44,8 @@ export function connectedWalletName(): string {
   return selectedName || ((window as any).ethereum ? "Browser wallet" : "");
 }
 export function hasWalletConnect(): boolean {
-  // Opt-in via VITE_ENABLE_WC. Mobile wallets only complete a usable session for
-  // chains they recognise; Arc mainnet (5042) is in the public chain lists, the
-  // testnet id often isn't — so the switch stays per-build.
+  // Per-build switch. Mobile wallets need to recognise the chain; mainnet (5042) is in
+  // the public lists, the testnet id usually isn't.
   return Boolean(import.meta.env.VITE_ENABLE_WC) && Boolean(import.meta.env.VITE_WC_PROJECT_ID);
 }
 
@@ -63,7 +60,7 @@ export async function useInjected(rdns: string): Promise<any> {
 }
 
 /** One provider instance for the whole page. EthereumProvider.init() builds a
- *  fresh sign-client sharing the same wc@2 storage — re-initializing on every
+ *  fresh sign-client sharing the same wc@2 storage, re-initializing on every
  *  click makes concurrent clients reset each other's pairing proposals. Init
  *  once, reuse; a failed init clears the cache so the next click retries. */
 let wcInit: Promise<any> | null = null;

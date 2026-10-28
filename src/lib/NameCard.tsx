@@ -1,5 +1,4 @@
-/** Client-side twin of the on-chain SVG in ZunivoNames.tokenURI —
- *  what you see here is pixel-identical to what wallets/marketplaces render. */
+/** Same SVG the contract returns from tokenURI, drawn client-side for previews. */
 export default function NameCard({ label, size = 230 }: { label: string; size?: number }) {
   const fs = label.length <= 8 ? 58 : label.length <= 13 ? 42 : 30;
   return (

@@ -1,5 +1,5 @@
 /**
- * records.ts — client for ZunivoAgentRecords, the service-discovery layer.
+ * records.ts, client for ZunivoAgentRecords, the service-discovery layer.
  * A .agent holder publishes an "agent card" (url / x402 / description) that
  * turns their name into a discoverable, callable, payable service.
  */

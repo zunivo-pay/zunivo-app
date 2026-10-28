@@ -6,10 +6,10 @@ import NameCard from "../lib/NameCard";
 
 
 
-/** On-chain records are attacker-controlled input — only ever link to https URLs. */
+/** On-chain records are attacker-controlled input, only ever link to https URLs. */
 const safeHttps = (u?: string) => (u && /^https:\/\/[^\s]+$/i.test(u) ? u : null);
 
-/** The public .agent service directory — every name that published an endpoint. */
+/** The public .agent service directory, every name that published an endpoint. */
 export default function Agents() {
   const [agents, setAgents] = useState<DirectoryAgent[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
